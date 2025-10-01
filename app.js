@@ -127,16 +127,12 @@ app.get('/user_auth', (req, res) => {
 app.get('/appointments/data', async (req, res) => {
   try {
     const { date, adminId } = req.query;
-    console.log('adminId:', adminId)
 
     const user = await Admin.findOne({adminId})
-    console.log('useris: ', );
-    
     let today = new Date();
     today.setHours(today.getHours() + 5);
     today.setMinutes(today.getMinutes() + 30);
     
-    console.log(today)
     if (!adminId) {
       return res.status(400).json({ message: 'Admin ID is required' });
     }
@@ -176,7 +172,6 @@ app.get('/appointments/data', async (req, res) => {
       ]);
 
       const availableDates = distinctDates.map(item => item._id);
-      console.log(availableDates)
       return res.json({availableDates, rname : user.username});
     }
 
@@ -206,10 +201,8 @@ app.get('/appointments/:uniqueId?', async (req, res) => {
   let user = null;
 
   if (uniqueId) {
-    console.log('Fetching user for uniqueId:', uniqueId);
     try {
       user = await Admin.findOne({ adminId: uniqueId });
-      console.log('User found:', user);
 
       if (!user) {
         return res.status(404).send('Invalid link or user not found');
@@ -256,7 +249,6 @@ app.get('/appointments-overview', isAdminAuthenticated, async (req, res) => {
     
     // Get the local start of the day (midnight in IST)
     const startOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 5, 30, 0, 0);
-    console.log('startOfDay', startOfDay)
     // Convert to IST (Indian Standard Time) and display
     const options = { timeZone: 'Asia/Kolkata', hour12: false };
     const startOfDayInIST = new Date(startOfDay.toLocaleString('en-US', options));
@@ -264,33 +256,27 @@ app.get('/appointments-overview', isAdminAuthenticated, async (req, res) => {
     
     // To calculate the end of the day in IST, we use a new Date instance
     const endOfDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 28, 89, 59, 999);
-    console.log('endOfDay', endOfDay)
     // Convert endOfDay to IST (Indian Standard Time) and display
     const endOfDayInIST = new Date(endOfDay.toLocaleString('en-US', options));
     
   
   try {
-    console.log(currentDate)
     // Query for current appointments (appointments that are on the same day as currentDate)
     const allAppointments = await Appointment.find({ adminId: req.session.adminId }); // ✅ only fetch appointments for this admin
 
     const currentAppointments = allAppointments.filter(appointment => {
-      console.log(appointment.appointmentDate);
       return appointment.appointmentDate >= startOfDay && appointment.appointmentDate < endOfDay;
     });
     
     const upcomingAppointments = allAppointments.filter(appointment => {
-      console.log(appointment.appointmentDate);
       return appointment.appointmentDate >= endOfDay;
     });
     
     const pastAppointments = allAppointments.filter(appointment => {
-      console.log(appointment.appointmentDate);
       return appointment.appointmentDate < startOfDay;
     });
     
     // Send the appointments data to the frontend
-    console.log(currentAppointments,upcomingAppointments,pastAppointments);
     res.json({
       currentAppointments,
       upcomingAppointments,
@@ -318,7 +304,6 @@ app.post('/send-email-otp', async (req, res) => {
     return res.status(400).json({ error: 'Admin already exists with the same email use another. ' });
   }
 
-  console.log(otp)
 
   otpMap.set(`email-otp-${email}`, { otp, timestamp: Date.now() });
   // try {
@@ -339,8 +324,6 @@ app.post('/send-usr-email-otp', async (req, res) => {
   if (! existingAdmin) {
     return res.status(400).json({ error: 'No Appointments booked in past.' });
   }
-
-  console.log(otp)
 
   otpMap.set(`usr-email-otp-${email}`, { otp, timestamp: Date.now() });
   // try {
@@ -428,7 +411,6 @@ app.post('/admin_signup', async (req, res) => {
     
     const x = new Date("2026-01-01T12:59:59.000Z");
     x.setTime(x.getTime()+330*60*1000);
-    console.log(x)
     // Save Admin with appointmentLink & qrCodePath
     const newAdmin = new Admin({
       adminId,
@@ -802,8 +784,6 @@ app.post('/admin/set-appointment', isAdminAuthenticated,  async (req, res) => {
     const today = new Date();
     const todayStr = today.toISOString().split('T')[0];  // "YYYY-MM-DD"
     
-    console.log('today:', todayStr, 'date:', date, 'time:', time, 'localtime:', today.toLocaleTimeString('en-IN'));
-    
     if (date === todayStr) {
       const [inputHour, inputMinute] = time.split(':').map(Number);
       const nowHour = today.getHours();
@@ -852,7 +832,6 @@ app.post('/admin/set-appointment', isAdminAuthenticated,  async (req, res) => {
 
     await newSlot.save();
 
-    console.log('New slot saved:', { adminId, date: appointmentDate, time: formattedTime });
 
     res.status(200).json({ message: 'Appointment slot created successfully.', time: formattedTime });
 
@@ -868,9 +847,6 @@ app.post('/admin/set-appointment-period', isAdminAuthenticated, async (req, res)
     const { appointmentDate, startTime, endTime, slotsCount } = req.body;
     const adminId = req.session.adminId;
 
-    console.log('Received:', req.body);
-    console.log('AdminId:', adminId);
-
     if (!adminId || !appointmentDate || !startTime || !endTime || !slotsCount) {
       return res.status(400).send('Missing required fields');
     }
@@ -881,16 +857,12 @@ app.post('/admin/set-appointment-period', isAdminAuthenticated, async (req, res)
 
     // ✅ Parse the appointment date as yyyy-mm-dd
     const appointmentDateStr = new Date(appointmentDate).toISOString().split('T')[0];
-
-    console.log('Today IST:',  nowIST, 'Appointment Date:', appointmentDateStr);
-
     // ✅ Compare as strings to avoid timezone issues
     if (appointmentDateStr === nowISTDateStr) {
       const [startHour, startMinute] = startTime.split(':').map(Number);
       const startTotalMinutes = startHour * 60 + startMinute;
       const [hoursStr, minutesStr] = nowIST.toISOString().split('T')[1].split(':');
       const nowTotalMinutes = Number(hoursStr) * 60 + Number(minutesStr);
-      console.log('isth',  nowIST.getHours(), 'startm', startTotalMinutes, 'totalm', nowTotalMinutes)
 
       if (startTotalMinutes <= nowTotalMinutes) {
         return res.status(400).send(
@@ -949,7 +921,6 @@ app.post('/admin/set-appointment-period', isAdminAuthenticated, async (req, res)
 
     // Save slots in bulk
     await Slot.insertMany(slotsToInsert);
-    console.log(`Inserted ${slotsCount} slots.`);
 
     res.send('Slots created successfully');
   } catch (error) {
@@ -963,10 +934,6 @@ const axios = require('axios');
 // function to generate OTP
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();  // 6-digit OTP as string
-}
-
-function sendSms(mobile, otp) {
-  console.log(`[SIMULATED] OTP ${otp} sent to ${mobile}`);
 }
 
 // function to share email on otp
@@ -988,7 +955,6 @@ async function sendEMail(toEmail, otp, message) {
     };
 
     await transporter.sendMail(mailOptions);
-    console.log(` Email sent to ${toEmail}`);
   } catch (err) {
     console.error(' Error sending email:', err.message);
     throw err;
@@ -1020,8 +986,6 @@ app.post('/admin/send-otp-mobile', isAdminAuthenticated, async (req, res) => {
     const admin = await Admin.findById(adminId);
     if (!admin) return res.status(404).send("Admin not found");
     
-    console.log('sending to ',admin.email);  
-    
     sendEMail(admin.email, otp);
     return res.json({ message: `OTP sent to registered email.` });
 
@@ -1044,7 +1008,6 @@ app.post('/admin/change-mobile', isAdminAuthenticated, async (req, res) => {
     if (!adminId) return res.status(401).json({ error: "Unauthorized" });
 
     const storedOtp = otpMap.get(`verify-mobile-${adminId}`);
-    console.log("🧾 Expected OTP:", storedOtp, "| Received:", otp);
 
       if (!storedOtp) {
         return res.status(400).json({ error: "OTP record not found or expired." });
@@ -1094,7 +1057,6 @@ app.post('/admin/send-otp-password', isAdminAuthenticated, async (req, res) => {
 
     //  Save OTP + password temporarily
     otpMap.set(`verify-password-${adminId}`, { otp, newPassword });
-    console.log("Saved OTP record:", otpMap.get(`verify-password-${adminId}`));
 
 
     sendEMail(admin.email, otp);
@@ -1114,9 +1076,6 @@ app.post('/admin/verify-password-otp', async (req, res) => {
     const adminId = req.session?.user?._id;
     const { newPassword, confirmPassword, otp } = req.body;
 
-    console.log("Route hit at", new Date().toISOString());
-    console.log("adminId:", adminId);
-    console.log("Entered OTP:", otp);
 
     if (!adminId) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -1124,7 +1083,6 @@ app.post('/admin/verify-password-otp', async (req, res) => {
 
     // ✅ Verify OTP
     const record = otpMap.get(`verify-password-${adminId}`);
-    console.log("OTP record:", record);
 
     if (!record || record.otp !== otp) {
       return res.status(400).json({ error: "Invalid or expired OTP" });
@@ -1141,7 +1099,6 @@ app.post('/admin/verify-password-otp', async (req, res) => {
 
     // ✅ Clear OTP
     otpMap.delete(`verify-password-${adminId}`);
-    console.log(`OTP for admin ${adminId} cleared.`);
 
     return res.json({ success: true, message: "Password updated successfully." });
 
@@ -1205,7 +1162,6 @@ app.post('/admin/change-email', async (req, res) => {
   if (!admin) return res.status(404).send("Admin not found");
 
   const record = otpMap.get(`verify-email-${adminId}`);
-  console.log({ storedOtp: record?.otp, receivedOtp: otp });
 
   if (!record || record.otp !== otp) {
     return res.status(400).send("OTP verification failed");
@@ -1223,7 +1179,6 @@ app.post('/admin/send-address-otp', isAdminAuthenticated, async (req, res) => {
   const { office_address } = req.body;
   const adminId = req.session.adminId;
 
-  console.log('adminIdis', adminId)
   if (!office_address) {
     return res.status(400).json({ error: 'Office address is required.' });
   }
@@ -1237,9 +1192,7 @@ app.post('/admin/send-address-otp', isAdminAuthenticated, async (req, res) => {
     createdAt: Date.now()
   });
 
-  console.log("Saved OTP record:", otpMap.get(`verify-address-${adminId}`));
   admin = await Admin.findOne({adminId:adminId})
-  console.log('adminis',admin)
   try {
     await sendEMail(admin.email, otp);
     res.json({ message: 'OTP sent to your registered email.' });
@@ -1260,7 +1213,6 @@ app.post('/admin/verify-address-otp', isAdminAuthenticated, async (req, res) => 
     return res.status(400).send('OTP expired or not requested.');
   }
 
-  console.log('Record found:', record);
 
   // Optional: Expiry check (5 mins)
   const otpExpiryMs = 5 * 60 * 1000;
@@ -1279,9 +1231,7 @@ app.post('/admin/verify-address-otp', isAdminAuthenticated, async (req, res) => 
       { corporateAdress: record.office_address }
     );
 
-    console.log(`Admin ${adminId} address updated to:`, record.office_address);
     otpMap.delete(`verify-address-${adminId}`);
-    console.log(`OTP for admin ${adminId} cleared.`);
 
     res.redirect('/admin/admin_dashboard');
   } catch (error) {
@@ -1295,7 +1245,6 @@ app.post('/admin/verify-address-otp', isAdminAuthenticated, async (req, res) => 
 
 app.post('/contact', (req, res)=>{
     var myData = new queries(req.body);
-    console.log(myData)
     myData.save().then(()=>{
         res.status(200).render('../views/index.pug');
     }).catch((error)=>{
@@ -1320,18 +1269,14 @@ function convertTo24Hour(hours, minutes, ampm) {
 // otp verification to submit appointment finally:
 app.post('/send-appointment-otp', async (req, res) => {
   try {
-    const { phoneNumber } = req.body;
-
-    if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
-      return res.status(400).json({ success: false, message: 'Invalid phone number' });
-    }
+    const { email } = req.body;
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    otpMap.set(`verify-appointment-${phoneNumber}`, { otp });
+    otpMap.set(`verify-appointment-${email}`, { otp });
 
-    sendSms(phoneNumber, `Your OTP for appointment booking is: ${otp}`);
+    sendEMail(email, `Your OTP for appointment booking is: ${otp}`);
 
-    return res.json({ success: true, message: `OTP sent to ${phoneNumber.slice(-4)}` });
+    return res.json({ success: true, message: `OTP sent to email` });
   } catch (err) {
     console.error('Error sending appointment OTP:', err);
     return res.status(500).json({ success: false, message: 'Failed to send OTP' });
@@ -1348,8 +1293,6 @@ app.post('/submit-appointment', async (req, res) => {
 
     // ✅ Step 1: Verify OTP First
     const record = otpMap.get(`verify-appointment-${phoneNumber}`);
-    console.log('OTP record:', record, otp.toString());
-
     if (!record || record.otp !== otp.toString()) {
       return res.status(400).json({ success: false, error: 'Invalid or expired OTP' });
     }
@@ -1366,7 +1309,6 @@ app.post('/submit-appointment', async (req, res) => {
     // ✅ Step 3: Create IST date and shift to UTC
     const localDate = new Date(year, month - 1, day, hours, minutes, 0, 0);
     const appointmentDateUTC = new Date(localDate.getTime() + 330 * 60 * 1000);
-    console.log('Booking Date (UTC):', appointmentDateUTC);
 
     // ✅ Step 4: Find and update slot
     const slot = await Slot.findOne({ adminId:uniqueId, date: appointmentDateUTC, time: appointmentTime });
@@ -1428,9 +1370,7 @@ app.get('/admin/stats', isAdminAuthenticated, async (req, res) => {
 
     const now = new Date();
     now.setTime(now.getTime()+330*60*1000);
-    console.log(now)
     const upcoming = await Appointment.countDocuments({ adminId:req.session.adminId, appointmentDate: { $gte: now }, status: 'Pending' });
-    console.log(upcoming)
     const past = await Appointment.countDocuments({ adminId:req.session.adminId, appointmentDate: { $lt: now }, status: { $in: ['Pending', 'Confirmed'] } });
 
     res.json({ total, confirmed, upcoming, past });

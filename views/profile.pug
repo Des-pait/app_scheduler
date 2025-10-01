@@ -119,7 +119,7 @@ html(lang="en")
                             input#new-mobile.form-control(type="text", name="new-mobile", required placeholder="Enter your new mobile number")
                           .d-flex.mb-3.gap-2.align-items-center
                             button#send-otp-mobile-btn.btn.btn-warning(type="button") Send OTP
-                            small.text-muted.ms-2 You will receive an OTP on your new mobile.
+                            small.text-muted.ms-2 You will receive an OTP on your reg. email.
                           .mb-3
                             label.form-label(for="otp-mobile") Enter OTP:
                             input#otp-mobile.form-control(type="text", name="otp-mobile", required placeholder="Enter received OTP")
@@ -194,7 +194,7 @@ html(lang="en")
       document.getElementById("send-otp-mobile-btn").addEventListener("click", function () {
         const newMobile = document.getElementById("new-mobile").value;
 
-        fetch("/admin/send-otp-mobile", {
+        fetch("/admin/send-otp-mail", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ newMobile })  // ✅ sending newMobile
@@ -252,7 +252,7 @@ html(lang="en")
 
       // Send OTP to registered mobile for password change
       document.getElementById("send-otp-password-btn").addEventListener("click", function () {
-        fetch("/admin/send-otp-password", {
+        fetch("/admin/send-otp-mail", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -297,7 +297,7 @@ html(lang="en")
         }
 
         try {
-          const res = await fetch('/admin/send-address-otp', {
+          const res = await fetch('/admin/send-otp-mail', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ office_address: address })

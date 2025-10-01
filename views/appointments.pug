@@ -249,16 +249,17 @@ html(lang="en")
           placeholder="Enter a valid email address",
           required
         )
-
-      .phone-section
-        label(for="phoneNumber") Enter your mobile number:
-        input(type="text", id="phoneNumber", name="phoneNumber", placeholder="Enter phone number", required)
+      
 
         button(type="button", class="send-otp-btn", onclick="sendOTP()") Send OTP
 
       .phone-section
         label(for="otp") Enter OTP:
         input(type="number", id="otp", name="otp", placeholder="Enter OTP", required)
+
+      .phone-section
+        label(for="phoneNumber") Enter your mobile number:
+        input(type="text", id="phoneNumber", name="phoneNumber", placeholder="Use to contact", required)
 
       button(type="submit", onclick="return verifyOtpBeforeSubmit()") Submit Appointment
 
@@ -398,21 +399,30 @@ html(lang="en")
       let isVerified = false;
 
       function sendOTP() {
-        const phoneNumber = document.getElementById('phoneNumber').value;
-        document.getElementById('phoneNumber').readOnly = true;
+        const email = document.getElementById('email').value;
+        document.getElementById('email').readOnly = true;
+        const ad = document.getElementById('appointmentDate').value
+        const at = document.getElementById('appointmentTime').value
+        const id = document.getElementById('uniqueId').value
+        if(!ad || !at || !id){
+          alert('select all above sections to procced next');
+          return;
+        }
+        document.getElementById('uniqueId').readOnly = true;
+        document.getElementById('appointmentTime').readOnly = true;
+        document.getElementById('appointmentDate').readOnly = true;
 
-
-        console.log(phoneNumber)
+        console.log(email)
         
-        if (!phoneNumber.match(/^\d{10}$/)) {
-          alert('Enter a valid 10-digit phone number.');
+        if (!email) {
+          alert('Enter a valid email');
           return;
         }
 
         fetch('/send-appointment-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phoneNumber })
+          body: JSON.stringify({ email })
         })
           .then(response => response.json())
           .then(data => {
@@ -442,6 +452,12 @@ html(lang="en")
           alert('Please enter the OTP.');
           return false;
         }
+        if (!phoneNumber){
+          alert('Enter your contact number');
+          return;
+        }
+
+        document.getElementById('phoneNumber').readOnly=true;
 
         try {
           const response = await fetch('/submit-appointment', {
