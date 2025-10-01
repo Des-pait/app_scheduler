@@ -1,0 +1,85 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title Tickr
+    link(rel='stylesheet', href='style.css')
+  body
+    // Banner Section
+    section.banner
+      p Free for all users until 01-January-2026! 🚀 Sign up now and enjoy hassle-free scheduling.
+
+    // Navbar
+    nav.navbar
+      .navbar-container
+        a.navbar-brand(href='/') Tickr
+
+        // Burger menu (mobile)
+        .burger
+          span
+          span
+          span
+
+        ul.nav-links
+          li: a(href='/') Home
+          li: a(href='/contact') Contact
+          li: a(href='/admin/login') Login
+
+    // Hero Section
+    section.hero
+      .hero-content
+        h1 Simplify scheduling, boost your business — join us today
+        p Fast and manageable scheduling at your fingertips.
+        a.btn.btn-primary(href='/appointments') Book Your Appointment
+        a.btn.btn-secondary(href='/user_auth') View Past Appointments
+
+    // Features
+    section.features
+      .feature
+        svg(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24", class="icon")
+          path(d="M5 12h14M12 5v14")
+        h3 Easy Booking
+        p Book appointments with just a few clicks.
+
+      .feature
+        svg(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24", class="icon")
+          circle(cx="12", cy="8", r="4")
+          path(d="M4 22c0-4 4-6 8-6s8 2 8 6")
+        h3 Trusted By Professionals
+        p Micro-macro offices like CA, Lawyers, Counsellors, Doctors, and more find it useful.
+
+      .feature
+        svg(xmlns="http://www.w3.org/2000/svg", viewBox="0 0 24 24", class="icon")
+          path(d="M12 7v5l3 3")
+          circle(cx="12", cy="12", r="10")
+        h3 Manage Your Time
+        p Schedule and reschedule with ease.
+
+    // Testimonials
+    section.testimonials
+      h2 Why Our Clients Love Us ❤️
+      .cards
+        .card
+          p "Super easy to book my dentist appointment. Saved me so much time!"
+          span – Dheeraj
+        .card
+          p "Professional doctors and quick scheduling. Highly recommend."
+          span – Rajeev
+        .card
+          p "Best way to manage my client's appointments without stress."
+          span – Nivedita
+
+    // Footer
+    footer.footer
+      | © #{new Date().getFullYear()} Tickr. All rights reserved.
+
+    script(src='/js/nav.js')
+    script.
+      document.addEventListener("DOMContentLoaded", () => {
+        const burger = document.querySelector(".burger");
+        const navLinks = document.querySelector(".nav-links");
+        burger.addEventListener("click", () => {
+          navLinks.classList.toggle("active");
+        });
+      });

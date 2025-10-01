@@ -1,0 +1,88 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Fix My Appointment
+    link(rel="stylesheet", href="../style.css")
+
+  body
+    // Navbar
+    nav.navbar
+      ul.nav-links
+        li: a(href="/") Home
+        li: a(href="/contact") Contact
+          li: a(href='/admin/login') Login
+      .right-nav
+        a.btn-small(href="/admin/login") Admin
+      .burger
+        span
+        span
+        span
+
+    // Hero Section
+    section.hero
+      h1 Book Appointments Without the Hassle 🚀
+      p Streamline scheduling for your business or personal needs.
+      .cta-buttons
+        a.btn-primary(href="/appointments/new") Book Appointment
+        a.btn-secondary(href="/appointments/history") Past Appointments
+
+    // Contact Section
+    section#contact.contact
+      h2 Contact Us
+      form(action="/contact" method="post")
+        input(type="text" name="name" placeholder="Your Name" required)
+        input(type="text" name="state" placeholder="State or UT" list="state-list" required)
+        datalist#state-list
+          // --- States ---
+          option(value="Andhra Pradesh")
+          option(value="Arunachal Pradesh")
+          option(value="Assam")
+          option(value="Bihar")
+          option(value="Chhattisgarh")
+          option(value="Goa")
+          option(value="Gujarat")
+          option(value="Haryana")
+          option(value="Himachal Pradesh")
+          option(value="Jharkhand")
+          option(value="Karnataka")
+          option(value="Kerala")
+          option(value="Madhya Pradesh")
+          option(value="Maharashtra")
+          option(value="Manipur")
+          option(value="Meghalaya")
+          option(value="Mizoram")
+          option(value="Nagaland")
+          option(value="Odisha")
+          option(value="Punjab")
+          option(value="Rajasthan")
+          option(value="Sikkim")
+          option(value="Tamil Nadu")
+          option(value="Telangana")
+          option(value="Tripura")
+          option(value="Uttar Pradesh")
+          option(value="Uttarakhand")
+          option(value="West Bengal")
+
+          // --- Union Territories ---
+          option(value="Andaman and Nicobar Islands")
+          option(value="Chandigarh")
+          option(value="Dadra and Nagar Haveli and Daman and Diu")
+          option(value="Delhi")
+          option(value="Jammu and Kashmir")
+          option(value="Ladakh")
+          option(value="Lakshadweep")
+          option(value="Puducherry")
+
+          //- add rest...
+        input(type="tel" name="phone" placeholder="10-digit Mobile No." required maxlength="10")
+        input(type="email" name="email" placeholder="Email" required)
+        textarea(name="require" rows="5" placeholder="Describe your query" required)
+        button.btn-primary(type="submit") Submit
+
+    // Footer
+    footer.footer
+      p © #{new Date().getFullYear()} FixMyAppointment. All rights reserved.
+
+    script(src="resp.js")

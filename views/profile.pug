@@ -1,0 +1,328 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Appointment Admin Panel
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css")
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css")
+    style.
+      body {
+        background: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .navbar-dark {
+        background-color: #343a40;
+      }
+      .card {
+        border-radius: 12px;
+      }
+      .card-header {
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+      }
+      footer {
+        margin-top: 50px;
+        font-size: 0.9rem;
+      }
+
+  body
+    // Navbar
+    nav.navbar.navbar-expand-lg.navbar-dark.shadow-sm
+      .container-fluid
+        a.navbar-brand(href="/") <i class="fas fa-calendar-check me-2"></i> Admin Panel
+        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
+          span.navbar-toggler-icon
+        #navbarNav.collapse.navbar-collapse
+          ul.navbar-nav.ms-auto
+            li.nav-item
+              a.nav-link(href="/dashboard") Dashboard
+            li.nav-item
+              a.nav-link(href="/profile") Profile
+            li.nav-item
+              a.nav-link.text-danger(href="/admin/logout") Logout
+
+    // Profile & Security Layout with Side Nav
+    .container.mt-5.p-4.bg-light.rounded.shadow
+      .row
+        // Left Side: Nav Menu
+        .col-lg-2.mb-4
+          .list-group.shadow-sm
+            a.list-group-item.list-group-item-action(href="/dashboard") Dashboard
+            a.list-group-item.list-group-item-action.active(href="/profile") Profile
+            a.list-group-item.list-group-item-action.text-danger(href="/admin/logout") Logout
+
+        .row
+
+          // 🔹 Left: Profile Info + Booking Link + QR
+          .col-lg-7.mb-4
+            .card.shadow-sm.border-0
+              .card-header.bg-white.border-bottom
+                h4.mb-0.text-primary.fw-bold Profile Information
+              .card-body
+                dl.row
+                  dt.col-sm-4.text-muted Your Unique Id:
+                  dd.col-sm-8.text-dark #{user.adminId}
+
+                  dt.col-sm-4.text-muted Full Name:
+                  dd.col-sm-8.text-dark #{user.username}
+
+                  dt.col-sm-4.text-muted Email:
+                  dd.col-sm-8.text-dark #{user.email}
+
+                  dt.col-sm-4.text-muted Phone:
+                  dd.col-sm-8.text-dark #{user.mobile}
+
+                  dt.col-sm-4.text-muted Registered On:
+                  dd.col-sm-8.text-dark #{user.createdAt.toLocaleDateString('en-IN')}
+
+                  dt.col-sm-4.text-muted Office Address:
+                  dd.col-sm-8.text-dark #{user.corporateAdress}
+
+                  dt.col-sm-4.text-muted Subscription:
+                  dd.col-sm-8
+                    if user.isSubscribed
+                      span.text-success Active , Will expire on : #{user.subscriptionEnd ? user.subscriptionEnd.toLocaleString('en-IN') : 'N/A'}
+                    else
+                      span.text-danger Expired on #{user.subscriptionEnd ? user.subscriptionEnd.toLocaleString('en-IN') : 'N/A'}
+
+
+                  dt.col-sm-4.text-muted Last Login:
+                  dd.col-sm-8.text-dark #{user.lastLogin ? user.lastLogin.toLocaleString('en-IN') : 'Never logged in'}
+
+                // 🟢 Booking Link
+                .mt-4.text-center
+                  p.fw-bold.mb-2 Your Dedicated Appointment Booking Link:
+                  a(href=user.appointmentLink target="_blank").btn.btn-success.mb-2
+                    i.fas.fa-link.me-2
+                    | appointment page link
+                  p.text-break.small.text-muted.mt-2 #{user.appointmentLink}
+
+                // 🔳 QR Code & Share
+                .mt-4.text-center
+                  p.fw-bold.mb-2 Your Appointment QR Code:
+                  img(src=user.qrCodePath, alt="QR Code", width="200", height="200", class="img-fluid mt-2 rounded shadow-sm")
+                  
+                  // 🔗 Share QR Button (Download)
+                  .mt-3
+                    a(href=user.qrCodePath, download=`${user.adminId}_AppointmentQR.png`, class="btn btn-outline-primary")
+                      i.fas.fa-download.me-2
+                      | Download QR Code
+
+          // 🔒 Right: Security Settings
+          .col-lg-5.mb-4
+            .card.shadow-sm.border-0
+              .card-header.bg-white.border-bottom
+                h4.mb-0.text-danger.fw-bold Security Settings
+              .card-body
+                .accordion(id="securityAccordion")
+
+                  // Change Mobile Number
+                  .accordion-item.mb-3
+                    h5.accordion-header
+                      button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#collapseMobile") Change Mobile Number
+                    .accordion-collapse.collapse#collapseMobile
+                      .accordion-body
+                        form(action="/admin/change-mobile", method="POST")
+                          .mb-3
+                            label.form-label(for="new-mobile") New Mobile Number:
+                            input#new-mobile.form-control(type="text", name="new-mobile", required placeholder="Enter your new mobile number")
+                          .d-flex.mb-3.gap-2.align-items-center
+                            button#send-otp-mobile-btn.btn.btn-warning(type="button") Send OTP
+                            small.text-muted.ms-2 You will receive an OTP on your new mobile.
+                          .mb-3
+                            label.form-label(for="otp-mobile") Enter OTP:
+                            input#otp-mobile.form-control(type="text", name="otp-mobile", required placeholder="Enter received OTP")
+                          button.btn.btn-primary.w-100(type="submit") Change Mobile
+
+                  // Change Email
+                  .accordion-item.mb-3
+                    h5.accordion-header
+                      button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#collapseEmail") Change Email
+                    .accordion-collapse.collapse#collapseEmail
+                      .accordion-body
+                        form(action="/admin/change-email", method="POST")
+                          .mb-3
+                            label.form-label(for="new-email") New Email Address:
+                            input#new-email.form-control(type="email", name="new-email", required placeholder="Enter your new email")
+                          .d-flex.mb-3.gap-2.align-items-center
+                            button#send-otp-email-btn.btn.btn-warning(type="button") Send OTP
+                            small.text-muted.ms-2 An OTP will be sent to your new email.
+                          .mb-3
+                            label.form-label(for="otp-email") Enter OTP:
+                            input#otp-email.form-control(type="text", name="otp-email", required placeholder="Enter received OTP")
+                          button.btn.btn-primary.w-100(type="submit") Change Email
+
+                  // Change Password
+                  .accordion-item.mb-3
+                    h5.accordion-header
+                      button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#collapsePassword") Change Password
+                    .accordion-collapse.collapse#collapsePassword
+                      .accordion-body
+                        form#change-password-form(action="/admin/verify-password-otp", method="POST")
+                          .mb-3
+                            label.form-label(for="new-password") New Password:
+                            input#new-password.form-control(type="password", name="new-password", required placeholder="Enter new password")
+                          .mb-3
+                            label.form-label(for="confirm-password") Confirm Password:
+                            input#confirm-password.form-control(type="password", name="confirm-password", required placeholder="Re-enter new password")
+                          .d-flex.mb-3.gap-2.align-items-center
+                            button#send-otp-password-btn.btn.btn-warning(type="button") Send OTP
+                            small.text-muted.ms-2 OTP will be sent to your registered mobile/email.
+                          .mb-3
+                            label.form-label(for="otp-password") Enter OTP:
+                            input#otp-password.form-control(type="text", name="otp", required placeholder="Enter received OTP")
+                          button.btn.btn-primary.w-100(type="submit") Change Password
+
+                  // Change Office Address
+                  .accordion-item
+                    h5.accordion-header
+                      button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#collapseAddress") Change Office Address
+                    .accordion-collapse.collapse#collapseAddress
+                      .accordion-body
+                        form#change-address-form(action="/admin/verify-address-otp", method="POST")
+                          .mb-3
+                            label.form-label(for="new-address") New Address:
+                            input#new-address.form-control(type="text", name="office_address", required placeholder="Enter new office address")
+                          .d-flex.mb-3.gap-2.align-items-center
+                            button#send-otp-address-btn.btn.btn-warning(type="button") Send OTP
+                            small.text-muted.ms-2 OTP will be sent to your mobile.
+                          .mb-3
+                            label.form-label(for="otp-office") Enter OTP:
+                            input#otp-office.form-control(type="text", name="otp_office", required placeholder="Enter received OTP")
+                          button.btn.btn-primary.w-100(type="submit") Update Address
+
+
+    // Footer
+    footer.text-center.text-muted.py-4
+      | &copy; #{new Date().getFullYear()} Appointment Management System
+
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
+
+    script.
+      //- also check is newly entered mail already exist
+      document.getElementById("send-otp-mobile-btn").addEventListener("click", function () {
+        const newMobile = document.getElementById("new-mobile").value;
+
+        fetch("/admin/send-otp-mobile", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newMobile })  // ✅ sending newMobile
+        })
+        .then(res => res.json())
+        .then(data => alert(data.message || data.error));
+      });
+
+
+      // Verify password OTP before submitting
+      document.getElementById('change-password-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const password = document.getElementById('new-password').value;
+        const confirm = document.getElementById('confirm-password').value;
+        const otp = document.getElementById('otp-password').value;
+
+        if (password !== confirm) {
+          alert('New password and confirm password do not match.');
+          return;
+        }
+
+        if (!otp || otp.length !== 6 || !/^\d+$/.test(otp)) {
+          alert('Please enter a valid 6-digit OTP.');
+          return;
+        }
+
+        try {
+          const otpResponse = await fetch('/admin/verify-password-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              otp: otp,
+              newPassword: password,
+              confirmPassword: confirm
+            })
+          });
+
+          const otpResult = await otpResponse.json();
+
+          if (!otpResponse.ok) {
+            alert(otpResult.error || 'OTP verification failed.');
+            return;
+          }
+
+          // ✅ If password change succeeded
+          alert('Password updated successfully.');
+          window.location.href = '/profile';  // or redirect wherever you want
+
+        } catch (error) {
+          console.error('Error verifying OTP:', error);
+          alert('An error occurred. Please try again.');
+        }
+      });
+
+      // Send OTP to registered mobile for password change
+      document.getElementById("send-otp-password-btn").addEventListener("click", function () {
+        fetch("/admin/send-otp-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+            newPassword: document.getElementById("new-password").value,
+            confirmPassword: document.getElementById("confirm-password").value
+          })
+        })
+        .then(res => res.json())
+        .then(data => alert(data.message || data.error));
+      });
+
+      //- send otp for email change
+      document.getElementById("send-otp-email-btn").addEventListener("click", function () {
+        const newEmail = document.getElementById("new-email").value;
+
+        if (!newEmail || !newEmail.includes("@")) {
+          alert("Please enter a valid email address.");
+          return;
+        }
+
+        fetch("/admin/send-otp-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ newEmail }) //include in request body
+        })
+        .then(res => res.json())
+        .then(data => alert(data.message || data.error))
+        .catch(err => {
+          console.error("Email OTP send error:", err);
+          alert("An error occurred while sending OTP.");
+        });
+      });
+
+
+    script.
+      document.getElementById('send-otp-address-btn').addEventListener('click', async () => {
+        const address = document.getElementById('new-address').value.trim();
+
+        if (!address) {
+          alert('Please enter the new address first.');
+          return;
+        }
+
+        try {
+          const res = await fetch('/admin/send-address-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ office_address: address })
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            alert(data.error || 'Failed to send OTP');
+            return;
+          }
+
+          alert(data.message || 'OTP sent successfully');
+        } catch (err) {
+          console.error(err);
+          alert('Something went wrong');
+        }
+      });

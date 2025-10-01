@@ -1,0 +1,165 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Fresh Subscription
+
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css")
+
+    style.
+      body {
+        background: linear-gradient(145deg, #ffdde1, #ee9ca7);
+        font-family: 'Poppins', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .subscription-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+
+      .form-container {
+        position: relative;
+        display: inline-block;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background: white;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        cursor: pointer;
+        font-size: 20px;
+        color: black;
+      }
+
+
+      .subscription-card {
+        background-color: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        padding: 40px 30px;
+        max-width: 500px;
+        width: 100%;
+        animation: fadeIn 1s ease;
+      }
+
+      .subscription-card h2 {
+        color: #e60023;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 28px;
+      }
+
+      .form-group {
+        margin-bottom: 18px;
+      }
+
+      label {
+        font-weight: 600;
+        margin-bottom: 6px;
+        display: block;
+        color: #333;
+      }
+
+      select, input {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 15px;
+        background: #fafafa;
+      }
+
+      .btn-subscribe {
+        background: #e60023;
+        color: white;
+        border: none;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 50px;
+        cursor: pointer;
+        width: 100%;
+        transition: background 0.3s ease;
+      }
+
+      .btn-subscribe:hover {
+        background: #b8001b;
+      }
+
+      .support-text {
+        margin-top: 20px;
+        font-size: 13px;
+        text-align: center;
+        color: #666;
+      }
+
+      .alert {
+        background: #ffe0e0;
+        color: #990000;
+        padding: 10px 14px;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 16px;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+body
+  //- Fullscreen flex container to center content
+  .subscription-wrapper(style="display:flex; justify-content:center; align-items:center; min-height:100vh;")
+
+    .subscription-card
+
+      h2 Start Your Subscription
+
+      if errorMessage
+        .alert #{errorMessage}
+
+      //- Wrapper div for the form
+      .form-container(style="position:relative; display:inline-block; padding:20px; border:1px solid #ccc; border-radius:8px; background:white;")
+
+        //- Cross mark (×) at top-right
+        span.close-btn(style="position:absolute; top:8px; right:10px; cursor:pointer; font-size:20px; color:black;") &times;
+
+        form(action="/admin/subscribe", method="POST")
+          .form-group
+            label(for="plan") Choose Your Plan
+            select(name="plan", required)
+              option(value="") -- Select a Plan --
+              option(value="Basic") Basic (1 Month)
+              option(value="Premium") Premium (1 Year)
+
+          .form-group
+            label(for="referral") Referral Code (Optional)
+            input(type="text", name="referral", placeholder="Enter referral code if any", style="width:90%")
+
+          button.btn-subscribe(type="submit")
+            i.fas.fa-rocket.me-2
+            | Subscribe Now
+
+
+        p.support-text Need help? Contact us at support@example.com
+
+script.
+  document.addEventListener('DOMContentLoaded', function () {
+    const closeBtn = document.querySelector('.close-btn');
+
+    closeBtn.addEventListener('click', () => {
+      window.history.go(-1);  // Navigate to the previous page
+    });
+  });
+

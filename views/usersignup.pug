@@ -1,0 +1,232 @@
+doctype html 
+
+head
+  meta(charset='UTF-8')
+  meta(http-equiv='X-UA-Compatible' content='IE=edge')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(rel='stylesheet' href='../style.css')
+  title this is home page
+  style.
+    .aut{
+      margin:auto;
+      text-align:center;
+    }
+    .k{
+    width: 85px;
+    border-width: 2px;
+    margin: 10px;
+    background-color:blue;
+    color: azure;
+    }
+    .k1{
+    display: flex;
+    cursor: pointer;
+    text-decoration: dotted;
+    cursor: pointer;
+    } .k1 button:hover{
+    color: grey;
+    }
+    .ba{
+    max-width:100%;
+    }
+    .secright{
+    max-width: 100%;
+    }
+    .d1{
+    width: 100%;
+    height: 680px;
+    display: flex;
+    }
+  style.
+    #login-form {
+    justify-self:flex-start;
+    background-color: rgb(163, 160, 160);
+    top: 50%;
+    left: 50%;
+    width: 180px;
+    height: 190px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+    }
+    #login-form label, #login-form input[type="text"], #login-form input[type="password"], #login-form button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    }
+    #login-form button {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+    #login-form button:hover {
+    background-color: #e18282;
+    }
+  style.
+    .pt {
+    display: block;
+    text-align: center;
+    margin: 25px;
+    }  .pt1{
+    display: block;
+    text-align: center;
+    }.pt2{
+    display: block;
+    text-align: center;
+    }
+    .im{
+    width: 50%;
+    text-align: center;
+    display: block;
+    } .mi{
+    width: 100%;
+    height: 100px;
+    border-radius: 5px;
+    }
+    .l{
+    font-family:fantasy;
+    color: bisque;
+    }
+    @media only screen and (max-width: 835px){
+    .d1{
+    display: block;
+    }
+    .pt1{
+    display: flex;
+    width: 100%;
+    }.pt{
+    margin: 10px;
+    } .im{
+    display: flex;
+    width: 100%;
+    }
+    .mi{
+    width: 100%;
+    }
+    .ln{
+    justify-content: center;
+    }
+    #login-form{
+    margin: auto;
+    }
+    }
+  style.
+    .tt1{
+    display: block;
+    justify-content:  center ;
+    width: 100%;
+    }
+    .blk{
+    width:  700px ;
+    height:180px;
+    border: 10px solid green;
+    border-radius: 20px;
+    margin: 40px;
+    }
+    .l1{
+    font-family: cursive;
+    font-size: 20px;
+    text-align: center;
+    text-decoration: underline green;
+    margin: 15px;
+    }
+    .bl1{
+    margin: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .tt2{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    }
+    @media only screen and(max-width:1227px){
+    .tt2{
+    display: block;
+    }
+    }
+    @media only screen and(max-width:600px){
+    .blk{
+    width: 280px;
+    height: 285px;
+    }
+    }
+nav.navbar.background.hnav
+  ul.nav-list.vnav
+    .logo
+      img(src='img/nlogo.png' alt='logo')
+    li
+      a(href='/') Home
+    li
+      a(href='/services') Services
+    li
+      a(href='/about') About
+    li
+      a(href='/contact') Contact
+    li
+      a(href='/login') login/signup
+  .rightNav.vnav
+    input#search(type='text' name='search' placeholder='   Type of Loan')
+    button.btn search
+  .burger
+    .line
+    .line
+    .line
+.ln
+  .form-container
+    .form-header.aut
+      h2 Login
+
+      form#login-form.aut(action="/signup" method="post" )
+        label(for='signup-email') Email
+        input#signup-email.txt(type='text' name='email' placeholder='Enter your email')
+        label(for='username') Username
+        input#signup-email.txt(type='text' name='username' placeholder='Enter username')
+        label(for='signup-password') Password
+        input#signup-password.pwd(type='password' name='password' placeholder='Enter your password')
+        br
+        button.btn1(type='submit') Sign up
+      p
+        | Already have an account? 
+        a(href='/login' onclick='showLogin()') Sign in
+script(src='./resp.js')
+script(src='./index.js')
+script.
+  var myIndex = 0;
+  carousel();
+  function carousel() {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  for (i = 0; i < x.length; i++) {
+  x[i].style.display = "none";
+  }
+  myIndex++;
+  if (myIndex > x.length) {myIndex = 1}
+  x[myIndex-1].style.display = "block";
+  setTimeout(carousel, 2000);} // Change image every 2 seconds
+script.
+  // Using jQuery
+  $(document).ready(function() {
+  $('#login-form').hide();
+  $('#show-login-form').click(function() {
+  $('#login-form').fadeIn();
+  });
+  $('#login-form button[type="submit"]').click(function() {
+  $('#login-form').fadeOut();
+  });
+  });
+  // Using vanilla JavaScript
+  document.addEventListener('DOMContentLoaded', function() {
+  var loginForm = document.getElementById('login-form');
+  var showLoginForm = document.getElementById('show-login-form');
+  var submitButton = loginForm.querySelector('button[type="submit"]');
+  loginForm.style.display = 'none';
+  showLoginForm.addEventListener('click', function() {
+  loginForm.style.display = 'block';
+  });
+  submitButton.addEventListener('click', function() {
+  loginForm.style.display = 'none';
+  });
+  });

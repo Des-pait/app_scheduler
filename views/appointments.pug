@@ -1,0 +1,477 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Create Appointment
+
+    style.
+      /* Reset some default styling for consistency across browsers */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Body styling */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f7f6;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        flex-direction: column;
+      }
+
+      /* Main container for the form */
+      form {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 400px;
+        margin-bottom: 20px;
+      }
+
+      /* Heading */
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+      }
+
+      /* Date and Time sections */
+      .date-section,
+      .time-section,
+      .phone-section {
+        width: 100%; /* Full width of its parent container */
+        max-width: 400px; /* Optional: Limits the width on larger screens */
+        margin-bottom: 1rem; /* Adds spacing below the section */
+      }
+
+      .phone-section label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .phone-section .form-control {
+        width: 100%; /* Makes input responsive */
+        box-sizing: border-box; /* Ensures padding doesn't overflow */
+        padding: 8px 12px;
+        font-size: 1rem;
+      }
+
+      .payment-section {
+        margin-bottom: 20px;
+      }
+
+      /* Labels */
+      label {
+        display: block;
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 8px;
+      }
+
+      /* Inputs and select styling */
+      input[type="date"],
+      select,
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: #fafafa;
+      }
+
+      input[type="date"]:focus,
+      select:focus {
+        border-color: #4a90e2;
+        outline: none;
+      }
+
+      /* Button styling */
+      button[type="submit"] {
+        width: 100%;
+        padding: 12px;
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #357ab7;
+      }
+
+      /* Make Payment Button */
+      .payment-section button {
+        width: 100%;
+        padding: 12px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-bottom: 15px; /* Adds space between payment and submit button */
+      }
+
+      .payment-section button:hover {
+        background-color: #218838;
+      }
+
+      /* Send OTP button styling */
+      .send-otp-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #ff9800;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        float: right; /* Moves it to the right */
+      }
+
+      .send-otp-btn:hover {
+        background-color: #e68900;
+      }
+
+      /* Show Existing Appointments Button (on the right side below date) */
+      .show-appointments-btn {
+        width: auto;
+        padding: 10px 20px;
+        background-color: #9c27b0;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 10px;
+        float: right; /* Align button to the right */
+      }
+
+      .show-appointments-btn:hover {
+        background-color: #7b1fa2;
+      }
+
+      /* Responsive design */
+      @media (max-width: 480px) {
+        form {
+          padding: 15px;
+          width: 90%;
+        }
+
+        h1 {
+          font-size: 1.5rem;
+        }
+      }
+
+  body
+    h1 Fix - Your - Appointment
+    form(action="/submit-appointment", method="POST")
+      .phone-section
+        label(for="uniqueId") Enter your Unique ID:
+        if !uniqueId || uniqueId.length < 10
+          input(
+            type="text",
+            id="uniqueId",
+            name="uniqueId",
+            placeholder="Enter Unique ID",
+            onblur="verifyUniqueIdAndFetchSlots()",
+            required
+          )
+        else
+          input(
+            type="text",
+            id="uniqueId",
+            name="uniqueId",
+            placeholder="Enter Unique ID",
+            value=uniqueId,
+            onblur = "verifyUniqueIdAndFetchSlots()",
+            required,
+            readonly=readonly
+          )
+
+        if readonly
+          small.text-success.ms-2 (Auto-filled from your appointment link)
+
+      .phone-section
+        label(for="rname") Receipent's Name:
+        input(
+          type="text",
+          id="rname",
+          name="rname",
+          placeholder="receipent's name",
+          required,
+          value=rname,
+          readonly=readonly,
+          disabled
+        )
+        if readonly
+          small.text-success.ms-2 (Auto-filled from your appointment link)
+
+      .phone-section
+        label(for="name") Enter your Name:
+        input(type="text", name="name", placeholder="Name", required)
+
+      .date-section
+        label(for="appointmentDate") Choose your preferred date:
+        select(id="appointmentDate", name="appointmentDate", required)
+          option(value="") Select a date
+          // Available dates will be dynamically inserted here
+
+      .time-section
+        label(for="appointmentTime") Choose your preferred time:
+        select(id="appointmentTime", name="appointmentTime", required)
+          option(value="") Select a time slot
+          // Available time slots will be dynamically inserted here
+      
+      .phone-section
+        label(for="email") Enter your Email:
+        input#email.form-control(
+          type="email",
+          name="email",
+          placeholder="Enter a valid email address",
+          required
+        )
+
+      .phone-section
+        label(for="phoneNumber") Enter your mobile number:
+        input(type="text", id="phoneNumber", name="phoneNumber", placeholder="Enter phone number", required)
+
+        button(type="button", class="send-otp-btn", onclick="sendOTP()") Send OTP
+
+      .phone-section
+        label(for="otp") Enter OTP:
+        input(type="number", id="otp", name="otp", placeholder="Enter OTP", required)
+
+      button(type="submit", onclick="return verifyOtpBeforeSubmit()") Submit Appointment
+
+    .instructions
+      p Please ensure that your selected date and time are available.
+
+    script.
+
+      let verifiedAdminId = null;
+
+      // Verify uniqueId and fetch dates
+      function verifyUniqueIdAndFetchSlots() {
+        const uniqueId = document.getElementById('uniqueId').value.trim();
+        console.log('Unique ID:', uniqueId);
+
+        if (!uniqueId) {
+          alert('Please enter a Unique ID');
+          return;
+        }
+
+        alert(`Unique ID: ${uniqueId}`);  // ✅ Corrected
+        alert(`/appointments/data?adminId=${encodeURIComponent(uniqueId)}`)
+
+        fetch(`/appointments/data?adminId=${encodeURIComponent(uniqueId)}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Invalid Admin ID');
+            }
+            return response.json();
+          })
+          .then(data => {
+            verifiedAdminId = uniqueId;
+
+              alert('rname' + data.rname)
+              alert('date:' + data.availableDates)
+              // ✅ Update recipient name
+              const nameInput = document.getElementById('rname');
+              alert('nameI' + nameInput)
+              if (nameInput && data.rname) {
+                nameInput.value = data.rname;
+                alert('NI' + nameInput.value)
+                nameInput.disabled = true;
+              }
+
+
+            document.getElementById('uniqueId').readOnly = true;
+
+            const dateSelect = document.getElementById('appointmentDate');
+            dateSelect.innerHTML = '';
+
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select a date';
+            dateSelect.appendChild(defaultOption);
+            
+            const availableDate = data.availableDates
+
+            availableDate.forEach(date => {
+              const option = document.createElement('option');
+              option.value = date;
+              option.textContent = date;
+              dateSelect.appendChild(option);
+            });
+
+            dateSelect.addEventListener('change', fetchAvailableTimes);
+          })
+          .catch(error => {
+            console.error('Error verifying Unique ID or fetching slots:', error);
+            alert('Invalid Unique ID or no slots found.');
+          });
+      }
+
+
+      // Fetch available time slots based on selected date
+      function fetchAvailableTimes() {
+        const selectedDate = document.getElementById('appointmentDate').value;
+
+        if (!selectedDate || !verifiedAdminId) {
+          alert('Please select a date first!');
+          return;
+        }
+
+        fetch(`/appointments/data?date=${encodeURIComponent(selectedDate)}&adminId=${encodeURIComponent(verifiedAdminId)}`)
+          .then(response => response.json())
+          .then(data => {
+            const timeSelect = document.getElementById('appointmentTime');
+            timeSelect.innerHTML = '';
+
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = 'Select a time slot';
+            timeSelect.appendChild(defaultOption);
+
+            data.forEach(slot => {
+              const option = document.createElement('option');
+              option.value = slot.time;
+              option.textContent = slot.time;
+              timeSelect.appendChild(option);
+            });
+
+            if (data.length === 0) {
+              alert('No available slots for the selected date.');
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching available time slots:', error);
+            alert('Error fetching time slots. Please try again later.');
+          });
+      }
+
+
+        // Convert 24-hour time to 12-hour format with AM/PM
+        function convertTo12HourFormat(time) {
+          const [hours, minutes] = time.split(':');
+          let hour = parseInt(hours, 10);
+          let ampm = 'AM';
+
+          if (hour === 0) {
+            hour = 12; // Midnight is 12:00 AM
+          } else if (hour === 12) {
+            ampm = 'PM'; // Noon is 12:00 PM
+          } else if (hour > 12) {
+            hour -= 12; // Convert PM times
+            ampm = 'PM';
+          }
+
+          return `${hour}:${minutes} ${ampm}`;
+        }
+
+        // Initialize the available dates dropdown when the page loads
+        window.onload = fetchAvailableDates;
+
+
+    //- mobile verification using otp
+    script.
+      let sentOtp = ''; // will store the OTP temporarily
+      let isVerified = false;
+
+      function sendOTP() {
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        document.getElementById('phoneNumber').readOnly = true;
+
+
+        console.log(phoneNumber)
+        
+        if (!phoneNumber.match(/^\d{10}$/)) {
+          alert('Enter a valid 10-digit phone number.');
+          return;
+        }
+
+        fetch('/send-appointment-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phoneNumber })
+        })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data)
+            if (data.success) {
+              sentOtp = data.otp; // For testing only; remove in production!
+              alert('OTP sent to your phone.');
+            } else {
+              alert('Failed to send OTP: ' + data.message);
+            }
+          })
+          .catch(err => {
+            console.error(err);
+            alert('Error sending OTP');
+          });
+      }
+
+      async function verifyOtpBeforeSubmit() {
+        const otp = document.getElementById('otp').value;
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const appointmentDate = document.getElementById('appointmentDate').value;
+        const appointmentTime = document.getElementById('appointmentTime').value;
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+
+        if (!otp) {
+          alert('Please enter the OTP.');
+          return false;
+        }
+
+        try {
+          const response = await fetch('/submit-appointment', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phoneNumber, otp, appointmentDate, appointmentTime, name, email, uniqueId })
+          });
+
+          const data = await response.json();
+          console.log(data);
+
+          if (data.success) {
+            alert(data.message);
+            return true;
+          } else {
+            alert('OTP verification failed: ' + data.error);
+            return false;
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Error verifying OTP.');
+          return false;
+        }
+      }
+
+    script.
+      window.addEventListener('DOMContentLoaded', function () {
+        const uniqueId = document.getElementById('uniqueId').value.trim();
+        console.log('Auto verify on load - uniqueId:', uniqueId);
+        if (uniqueId && uniqueId.length >= 5) {  // Change 5 to your min length
+          verifyUniqueIdAndFetchSlots();
+        }
+      });

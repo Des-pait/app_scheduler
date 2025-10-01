@@ -1,0 +1,750 @@
+doctype html
+head
+  meta(charset='UTF-8')
+  meta(http-equiv='X-UA-Compatible' content='IE=edge')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  link(rel='stylesheet' href='./style.css')
+  title Services
+  style.
+    .Loan_calcualtor{
+    width: 270px;
+    height: 350px;
+    background-color: black;
+    left: 102%;
+    top: 50%;
+    padding: 0px;
+    border-radius: 10px;
+    color: white;
+    }
+    .p{
+    color: white;
+    font-size: 17px;
+    font-family: sans-serif;
+    width: 100%;
+    margin-left: 26px;
+    margin-top: 3px;
+    }
+    .h1{
+    color: rgb(231, 144, 15);
+    margin: 10px;
+    margin-left: 23px;
+    }
+    .input{
+    height: 33px;
+    width: 70%;
+    background-color: green;
+    font-size: 20px;
+    color: white;
+    padding: 4px;
+    }
+    #calculate_op{
+    color: white;
+    font-size: 15px;
+    width: 100px;
+    align-content: center;
+    margin-left: 69px;
+    margin-top: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    }
+    .b{
+    color: black;
+    }
+    .container{
+    width: 100%;
+    }
+    .secright{
+    align-items: flex-start;
+    }
+  style(type='text/css').
+    /* CSS for styling the form */
+    .f1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    }
+    .itr{
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    }
+    .pi{
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    }
+    .its{
+    padding: 10px 20px;
+    margin: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+    .tbl{
+    margin-top: 50px;
+    border-collapse: collapse;
+    width: 80%;
+    }
+    th, td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    }
+    th {
+    background-color: #4CAF50;
+    color: white;
+    }
+    /* Form styling */
+    .f1{
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    }
+    .lbl{
+    display: block;
+    margin-bottom: 10px;
+    }
+    .pi{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    }
+    .its {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+    .its:hover {
+    background-color: #3e8e41;
+    }
+    /* Result styling */
+    #result {
+    margin-top: 20px;
+    font-size: 18px;
+    }
+    #result strong {
+    font-weight: bold;
+    }
+    /* Amortization table styling */
+    #amortizationTable {
+    margin-top: 40px;
+    border-collapse: collapse;
+    width: 100%;
+    }
+    #amortizationTable th {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    }
+    #amortizationTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+    }
+    #amortizationTable tr:nth-child(even) {
+    background-color: #f2f2f2;
+    }
+    /* CSS for styling the form */
+    .f1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    }
+    .itr{
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    }
+    .pi{
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+    }
+    .its{
+    padding: 10px 20px;
+    margin: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    }
+    .tbl{
+    margin-top: 50px;}
+    .t1{
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: auto;
+    text-align-last: center;
+    font-size: 20px;
+    }
+  style.
+    .lm{
+    font-style: oblique;
+    font-size: 25px;
+    font-weight:1000;
+    color:blue;
+    }
+    .ml{
+    margin: 15px;
+    }
+  style.
+    .tt1{
+    display: block;
+    justify-content:  center ;
+    width: 100%;
+    }
+    .blk{
+    width:  700px ;
+    height:180px;
+    border: 10px solid green;
+    border-radius: 20px;
+    margin: 10px;
+    }
+    .l1{
+   font-style: oblique;
+    font-size: 20px;
+    text-align: center;
+    margin: 15px;
+    font-weight: bold;
+    }
+    .bl1{
+    margin: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .tt2{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    }
+    .ik{
+    justify-content: center;
+    display: flex;
+    }
+    .doc{
+    font-size: 50px;
+    }
+    @media only screen and (max-width:1227px){
+    .tt2{
+    display: block;
+    }
+    .tt1{
+    justify-content: center;
+    }
+    .blk{
+    margin:auto;
+    margin-top: 18px;
+    margin-bottom: 18px;
+    }
+    }
+    @media only screen and (max-width:700px){
+    .blk{
+    width:  100% ;
+    height:fit-content;
+    margin:auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    }
+    .t1{
+    font-size: 10px;
+    }
+    }
+    @media only screen and (max-width:336px){
+        .pi{
+            width:186px;
+        }
+    }
+    @media only screen and (max-width:600px){
+    .tbl{
+    margin-top: 50px;
+    border-collapse: collapse;
+    max-width: 230px;
+    }
+    th, td {
+    text-align: left;
+    padding: 3px;
+    border-bottom: 1px solid #ddd;
+    }
+    th {
+    background-color: #4CAF50;
+    color: white;
+    }
+    .in{
+    justify-content: center;
+    overflow-y: hidden;
+    }
+    #amortizationTable {
+    margin-top: 40px;
+    border-collapse: collapse;
+    width: 100%;
+    }
+    .doc{
+    font-size: 30px;
+    }
+    #amortizationTable th {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 4px;
+    text-align: center;
+    overflow-wrap: normal;
+    overflow-x: hidden;
+    }
+    #amortizationTable td {
+    padding: 4px;
+    border: 1px solid #ddd;
+    text-align: center;
+    }
+    .itr, .pi{
+    width: 250px;
+    }
+    }
+body(style='overflow-wrap: anywhere;')
+nav.navbar.background.hnav(style='background-color: grey;')
+  ul.nav-list.vnav
+    .logo
+      img(src='img/nlogo.png' alt='logo')
+    li
+      a(href='/') Home
+    li
+      a(href='/services') Services
+    li
+      a(href='/about') About
+    li
+      a(href='/contact') Contact
+    li
+      a(href='/login') login/signup
+  .rightNav.vnav
+    //- input#search(type='text' name='search' placeholder='Type of Loan')
+    //- button.btn search
+  .burger
+    .line
+    .line
+    .line
+.secright
+  .container
+    h1(style='text-align: center; font-size:xx-large; color: black; text-shadow: gray; text-decoration: underline;') Available Services
+    br
+    p(style='font-style: italic; font-size: medium; text-align: center;')
+      | Our financial services are available across all states in INDIA for all clients in all segements as per clients convenience.
+    .t1
+      br
+      br
+      span Loan EMI calculator with EMI shedule and monthly principal and interest.
+      form.f1(style='margin-top: 5px;' action="/EMI"  method="GET")
+        label(for='principal') Loan Amount:
+        input#principal.pi(type='number' name='principal' placeholder='Enter loan amount' required='')
+        label(for='interest') Interest Rate (% per year):
+        input#interest.itr(type='text' name='interest' placeholder='Enter interest rate' required='')
+        label(for='tenure') Loan Tenure (in years):
+        input#tenure.pi(type='number' name='tenure' placeholder='Enter loan tenure' required='')
+        input.its(type='submit' value='Calculate EMI')
+      #result
+      .in
+        table#amortizationTable
+          thead
+            tr
+              th Month
+              th Opening Balance
+              th EMI
+              th Interest
+              th Principal
+              th Closing Balance
+          tbody
+.secright(style='display: block;')
+  p.doc(style='margin: 30px; margin-top: 70px; color: red; text-decoration: underline;  text-align: center; font-style: italic;') Basic documentation for required loans. 
+  .pl
+    .ik(style='justify-content: center;')
+      .blk(style='    border-color: rgb(205 232 255);background-color: palevioletred;')
+        p.l1 personal Loan 
+        p.bl1
+          | A personal loan is a loan that does not require collateral or security and is offered with minimal documentation. You can use the funds from this loan for any legitimate financial need.
+    p.lm 1. personal loan
+    p.ml
+      | &check; Duly filled in application form &amp; credit information
+      | &check; For salaried - Income proof i.e. last 2 year&rsquo;s ITR/Form 16, latest 3 months salary slip
+      | &check; Bank statement of last 12 months.
+    p.ml
+      | &check; KYC documents of applicant and co-applicant/guarantor(if any):  
+      br
+      |         &#x2756; Identity proof (PAN card/Voters ID/Passport/Aadhaar etc) 
+      br
+      |         &#x2756; Address proof (Driving license/Passport/Aadhaar etc) 
+      br
+      |         &#x2756; Office/business address proof  
+      br
+      |         &#x2756; Latest passport size two photographs
+    p.ml
+      | &check; For salaried - Income proof i.e. last 2 year&rsquo;s ITR/Form 16, latest 3 months salary slip
+    p.ml  &check; Bank statement of last 12 months.
+  br
+  br
+  .pl
+    .ik
+      .blk(style='    border-color: rgb(205 232 255);background-color: palevioletred;')
+        p.l1 Home Loan 
+        p.bl1
+          | A home loan is an amount an individual borrows from a financial institution such as a housing finance company to buy a new or a resale home, construct a home or renovate or extend an existing one.
+    p.lm 2. home loan
+    p.ml
+      | &check; Duly filled in application form &amp; credit information
+    p.ml
+      | &check; KYC documents of applicant and co-applicant/guarantor(if any):
+      br
+      |         &#x2756; Identity proof (PAN card/Voters ID/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Address proof (Driving license/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Latest passport size two photographs
+      br
+    p.ml
+      | &check; For salaried - income proof i.e. last 2 year&rsquo;s ITR/Form 16, latest 3 salary slips and proof
+      | of other Income if any (In case not reflecting in ITRs/Form 16).
+    p.ml
+      | &check; For other than salaried - income proof i.e. last 3 year&rsquo;s ITR and proof of other Income if
+      | any (In case not reflecting in ITRs/Form 16).
+    p.ml
+      | &check; Bank statement of last 6 months.
+    p.ml
+      | &check; Property documents (based on proposed property i.e. Flat/House/Plot):
+      br
+      |         &#x2756; Agreement to sell/Allotment letter.
+      br
+      |         &#x2756; Copy of property ownership documents: Title deed/Original Sale Deed/Share
+      |         Certificate(s) issued by the society and other link parent documents conveying the
+      |         ownership. It should be ensured that in case of 2nd or onwards sale, all the original
+      |         documents must be in the possession of the owner/seller.
+      br
+      |         &#x2756; Advance payment receipts/own contribution receipts
+      br
+      |         &#x2756; Copy of approved plan by local body
+      br
+      |         &#x2756; NOC from Builder/Developer/Society
+      br
+      |         &#x2756; Statutory and regulatory approval of construction of proposed residential unit as per state
+      |         laws.
+      br
+      |         &#x2756; In case of construction/extension/repairs/renovations, estimate cost of construction
+      |         /extension/repairs/renovations.
+      br
+    p.ml
+      | &check; Additional documents in case of Take-over from other Bank/FI:
+      br
+      |         &#x2756; Sanction letter
+      br
+      |         &#x2756; Statement of account for last 12 months.
+      br
+      |         &#x2756; List of documents held with the Bank/FI (On letter head)
+      br
+      |         &#x2756; Authority letter from applicant authorizing the Bank/FI to directly handing over the
+      |         security documents to our Bank&rsquo;s authorized officials.
+      br
+    p.ml
+      | &check; Additional documents in case applicant/co-applicant is NRIs: 
+      br
+      |         &#x2756; Employment contract or offer letter (if the employer contract is in any language other
+      |         than English, the same has to be translated into English and attested by the 
+      br
+      |         employer/Indian Embassy).
+      br
+      |         &#x2756; Latest work permit.
+      br
+      |         &#x2756; Copy of passport.
+      br
+      |         &#x2756; Local address proof, if any.
+      br
+      |         &#x2756; Visa stamped on the passport.
+      br
+      |         &#x2756; Identity card issued by current employer.
+      br
+    p.ml
+      | &check; If NRI applicants execute the power of attorney (POA) document abroad, then the same
+      | has to be attested by respective Indian Embassy
+  br
+  br
+  .pl
+    .ik
+      .blk(style='    border-color: rgb(205 232 255);background-color: palevioletred;')
+        p.l1 Loan against property 
+        p.bl1
+          | As the name says it all, loan against property is the loan you get from the bank against the mortgage of your property. This type of loan comes under the category of secured loan. The security in this case is the property of the borrower.
+    p.lm 3.loan against property
+    p.ml
+      | &check; Duly filled in application form &amp; Credit information
+    p.ml
+      | &check; KYC documents of applicant and co-applicant/guarantor(if any):
+      br
+      |         &#x2756; Identity proof (PAN card/Voters ID/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Address proof (Driving license/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Latest passport size two photographs
+      br
+    p.ml
+      | &check; For salaried - Income proof i.e. last 2 year&rsquo;s ITR/Form 16, latest 3 salary slips and proof
+      | of other Income if any (In case not reflecting in ITRs/Form 16).
+    p.ml
+      | &check; For other than salaried - Income proof i.e. last 2 year&rsquo;s ITR and proof of other Income if
+      | any (In case not reflecting in ITRs/Form 16).
+      br
+    p.ml
+      | &check; Bank statement of last 6 months.
+      br
+    p.ml
+      | &check; Property documents (based on proposed property i.e. Flat/House/Plot):
+      br
+      |         &#x2756; Agreement to sell/Allotment letter.
+      br
+      |         &#x2756; Copy of property ownership documents: Title deed/Original Sale Deed/Share
+      |         Certificate(s) issued by the society and other link parent documents conveying the
+      |         ownership. It should be ensured that in case of 2nd or onwards sale, all the original
+      |         documents must be in the possession of the owner/seller.
+      br
+      |         &#x2756; Advance payment receipts/own contribution receipts
+      br
+      |         &#x2756; Copy of approved plan by local body
+      br
+      |         &#x2756; NOC from Builder/Developer/Society
+      br
+      |         &#x2756; Statutory and regulatory approval of construction of proposed residential unit as per state
+      |         laws.
+      br
+      |         &#x2756; In case of construction/extension/repairs/renovations, estimate cost of construction
+      |         /extension/repairs/renovations.
+      br
+    p.ml
+      | &check; Additional documents in case of Take-over from other Bank/FI:
+      br
+      |         &#x2756; Sanction letter
+      br
+      |         &#x2756; Statement of account for last 12 months.
+      br
+      |         &#x2756; Confidential credit report from existing bank.
+      br
+    p.ml
+      | &check; Additional documents in case applicant/co-applicant is NRIs:
+      br
+      |         &#x2756; Employment contract or offer letter (if the employer contract is in any language other
+      |         than English, the same has to be translated into English and attested by the
+      |         employer/Indian Embassy).
+      br
+      |         &#x2756; Latest work permit.
+      br
+      |         &#x2756; Copy of passport.
+      br
+      |         &#x2756; Local address proof, if any.
+      br
+      |         &#x2756; Visa stamped on the passport.
+      br
+      |         &#x2756; Identity card issued by current employer.
+      br
+      |         &#x2756; If NRI applicants execute the power of attorney (POA) document abroad, then the same
+      br
+      |         has to be attested by respective Indian Embassy 
+      br
+  br
+  br
+  .pl
+    .ik
+      .blk(style='    border-color: rgb(205 232 255);background-color: palevioletred;')
+        p.l1 Bussiness Loan 
+        p.bl1
+          | In simple terms, it involves borrowing against one of the company&apos;s assets, with the lender focusing on the quality of the collateral rather than the credit rating and prospects of the company. A business may borrow against several different types of asset, including premises, plant, stock or receivables.
+    p.lm 4. bussiness loan
+    p.ml
+      | &check;  PAN Card For Company/Firm/Individual
+    p.ml
+      | &check; KYC documents of applicant and co-applicant/guarantor(if any):
+      br
+      |         &#x2756; Identity proof (PAN card/Voters ID/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Address proof (Driving license/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Latest passport size two photographs
+      br
+    p.ml
+      | &check; Last 2 Years ITR along with computation of Balance Sheet, income &amp; Profit &amp; Loss a/c for the last 2 yrs.
+    p.ml  &check; Proof of Business Continuation
+    p.ml
+      | &check; Sole Proprietorship Declaration, Certified true copy of Memorandum &amp; Articles of Association
+    p.ml  &check; Last 3 years audited financials.
+  br
+  br
+  .pl
+    .ik
+      .blk(style=' border-color: rgb(205 232 255);background-color: palevioletred;')
+        p.l1 Auto Loan 
+        p.bl1
+          | A Vehicle Loan is a loan that allows you to purchase two and four wheelers for personal use.
+    p.lm 5. Auto loan
+    p.ml
+      | &check; KYC documents of applicant and co-applicant/guarantor(if any):
+      br
+      |         &#x2756; Identity proof (PAN card/Voters ID/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Address proof (Driving license/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Latest passport size two photographs
+      br
+    p.ml
+      | &check; Performa Invoice from authorised dealer of vehicle 
+      br
+      br
+      |       &check; Advance/booking amount payment receipt
+      br
+      br
+      |       &check; For salaried - Income proof i.e. last 2 year&rsquo;s ITR/Form 16, latest 3 salary slips and proof
+      |       of other Income if any (In case not reflecting in ITRs/Form 16).
+      br
+      br
+      |       &check; For other than salaried - Income proof i.e. last 2 year&rsquo;s ITR and proof of other Income if
+      |       any (In case not reflecting in ITRs/Form 16).
+      br
+      br
+      |       &check; Bank statement of last 6 months.
+      br
+      br
+      |       &check; Additional documents in case applicant/co-applicant is NRIs:
+      br
+      |       &#x2756; Employment contract or offer letter (if the employer contract is in any language other
+      |       than English, the same has to be translated into English and attested by the
+      |       employer/Indian Embassy).
+      br
+      |       &#x2756; Latest work permit.
+      br
+      |       &#x2756; Copy of passport.
+      br
+      |       &#x2756; Local address proof, if any.
+      br
+      |       &#x2756; Visa stamped on the passport.
+      br
+      |       &#x2756; Identity card issued by current employer.
+      br
+      |       &#x2756; If NRI applicants execute the power of attorney (POA) document abroad, then the same
+      |       has to be attested by respective Indian Embassy.
+      br
+      br
+      |       &check; Additional documents in case of Take-over from other Bank/FI:
+      br
+      |       &#x2756; Sanction letter
+      br
+      |       &#x2756; Statement of account for last 12 months.
+      br
+  br
+  br
+  .pl
+    .ik
+      .blk(style='border-color: rgb(205 232 255);background-color: palevioletred;')
+        p.l1 Machinery Loan 
+        p.bl1
+          | A machinery loan is a credit facility that helps you borrow funds to buy, lease, repair or upgrade machinery. It is a type of business loan that enables you to improve your productivity and efficiency without compromising your working capital.
+    p.lm 6. machinery loan
+    p.ml
+      | &check; KYC documents of applicant and co-applicant/guarantor(if any):
+      br
+      |         &#x2756; Identity proof (PAN card/Voters ID/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Address proof (Driving license/Passport/Aadhaar etc)
+      br
+      |         &#x2756; Latest passport size two photographs
+      br
+    p.ml
+      | &check;  Business vintage and existence proofs
+      br
+      br
+      |         &check; Last 2 year&rsquo;s ITR &amp; Last 1 year&rsquo;s bank statement 
+      br
+      br
+      |         &check; Existing facility sanction letter
+      br
+      br
+      |         &check; Original and valid quotation of the machine(s) &ndash; To be purchased 
+      br
+  br
+  .ko(style='text-align: start;')
+    p(style='font-style:italic ; text-align: center;')
+      | * above documentation are just for reference they may vary from corporation to corporation
+  br
+  br
+  br
+
+
+section#contact.contact
+  h1.textcenter Contact Us
+  .form
+    input#name.form-input.c(type='text' name='name' placeholder='Enter your name')
+    input#state.form-input.c(type='text' name='state' placeholder='Enter your state & pincode')
+    input#district.form-input.c(type='text' name='district' placeholder='Enter your district')
+    input#phone.form-input.c(type='number' name='phone' placeholder='Enter your 10-digit mobile no.')
+    input#email.form-input.c(type='text' name='email' placeholder='Enter your email')
+    textarea#text.form-input.c(type='text' name='name' rows='10' placeholder='describe your finance requirement')
+    br
+    button.btn-green.form-input submit
+footer
+  p.text-footer
+    | copyright &copy; 2022 All- right reserved
+script(src='script.js')
+script.
+  // Get the form element
+  const form = document.querySelector('form');
+  // Add an event listener to the form
+  form.addEventListener('submit', function(event) {
+  // Prevent the form from submitting
+  event.preventDefault();
+  // Get the input values
+  const principal = parseFloat(document.getElementById('principal').value);
+  const interestRate = parseFloat(document.getElementById('interest').value);
+  const tenure = parseInt(document.getElementById('tenure').value);
+  // Calculate the monthly interest rate and the total number of payments
+  const monthlyInterestRate = (interestRate / 100) / 12;
+  const totalNumberOfPayments = tenure * 12;
+  // Calculate the EMI
+  const emi = (principal * monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalNumberOfPayments)) / (Math.pow(1 + monthlyInterestRate, totalNumberOfPayments) - 1);
+  // Display the EMI
+  const resultElement = document.getElementById('result');
+  resultElement.innerHTML = `Your monthly EMI is <strong>${emi.toFixed(2)}</strong>`;
+  // Generate the amortization table
+  const amortizationTable = document.getElementById('amortizationTable');
+  const tbody = amortizationTable.querySelector('tbody');
+  // Reset the table
+  tbody.innerHTML = '';
+  // Calculate the monthly interest and principal amounts for each payment
+  let remainingBalance = principal;
+  for (let i = 1; i <= totalNumberOfPayments; i++) {
+  const interest = remainingBalance * monthlyInterestRate;
+  const principal = emi - interest;
+  remainingBalance -= principal;
+  const rem = remainingBalance+principal;
+  // Add a row to the table
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+  <td>${i}</td>
+  <td>${rem.toFixed(2)}</td>
+  <td>${emi.toFixed(2)}</td>
+  <td>${interest.toFixed(2)}</td>
+  <td>${principal.toFixed(2)}</td>
+  <td>${remainingBalance.toFixed(2)}</td>
+  `;
+  tbody.appendChild(tr);
+  }
+  });

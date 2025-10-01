@@ -1,0 +1,652 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Admin Dashboard
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css")
+    
+    style.
+      /* Custom styles for tables and forms */
+      table {
+        width: 100%;
+        margin: 20px 0;
+      }
+      th, td {
+        text-align: center;
+        vertical-align: middle;
+      }
+      .card-header {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+      .navbar {
+        margin-bottom: 20px;
+      }
+      .container {
+        padding-top: 20px;
+        min-height: auto;           /* Remove fixed height */
+        display: flex;
+        flex-direction: column;  
+        margin: auto;               /* Center it */
+      }
+
+      
+      .content {
+        flex: 1;
+      }
+      .logout-btn {
+        margin-top: 20px;
+        align-self: flex-end;
+      }
+      button {
+        margin: 5px;
+      }
+      .appointment-box {
+        border: 2px solid #007BFF;         
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3); 
+        background-color: #f9fcff;       
+      }
+      .hamburger-line {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: #000; /* Black color lines */
+        border-radius: 2px;
+      }
+
+
+      #profileDropdownBtn:hover {
+        color: #000;
+      }
+
+      .scrollable-container {
+        max-height: 300px; /* Adjust as needed */
+        overflow-y: auto;
+      }
+
+
+
+  body
+    .container
+      //- Top-right hamburger
+      .div.d-flex.justify-content-end.align-items-center
+        .dropdown
+          button#profileDropdownBtn.btn.bg-transparent.border-0.p-0(type='button', data-bs-toggle='dropdown', aria-expanded='false', style='width: 30px; height: 25px; display: flex; flex-direction: column; justify-content: space-between;')
+            span.hamburger-line
+            span.hamburger-line
+            span.hamburger-line
+
+          ul.dropdown-menu.dropdown-menu-end.shadow(aria-labelledby='profileDropdownBtn')
+            li
+              a.dropdown-item(href='/profile') Profile
+            li
+              form(action='/admin/logout', method='GET')
+                button.dropdown-item(type='submit', style='color: red; margin:0;') Logout
+
+    .container.mt-5.p-4.bg-light.rounded.shadow
+      h3.mb-4.text-uppercase.text-muted.fw-bold(style="color: #6c757d;") Admin Dashboard
+
+      .row.g-4.align-items-start
+        // -------------------- Stats & Chart Section --------------------
+        .col-lg-8
+          h4.mb-3.text-muted Appointment Statistics
+
+          .row.g-3
+            .col-md-3
+              .card.border-success.shadow-sm
+                .card-body
+                  h5.card-title.text-success Total Appointments
+                  h2#totalAppointments 0
+
+            .col-md-3
+              .card.border-primary.shadow-sm
+                .card-body
+                  h5.card-title.text-primary Confirmed Visits
+                  h2#confirmedVisits 0
+
+            .col-md-3
+              .card.border-warning.shadow-sm
+                .card-body
+                  h5.card-title.text-warning Upcoming Visits
+                  h2#upcomingVisits 0
+
+            .col-md-3
+              .card.border-danger.shadow-sm
+                .card-body
+                  h5.card-title.text-danger Past Appointments
+                  h2#pastAppointments 0
+
+          canvas#statsChart(style="max-height: 300px; margin-top: 30px;")
+
+        .col-lg-4
+          div.text-center.mt-3
+            button.btn.btn-outline-primary#toggleBtn(type="button") Switch to Time Period Mode
+
+          // -------------------- Single Time Slot Mode --------------------
+          div#single-slot-template.appointment-box.p-4.mt-4.mb-4.bg-white.shadow.rounded(style="max-width: 500px; margin: auto;")
+            form(action="/admin/set-appointment", method="POST", id="appointment-form-single")
+              input(type="hidden", name="mode", value="single")
+              .mb-3
+                label(for="appointment-date").fw-bold Select Date:
+                input#appointment-date.form-control(type="date", name="appointment-date", min=new Date().toISOString().split('T')[0], required)
+
+              .mb-3
+                label(for="appointment-time").fw-bold Select Time:
+                input#appointment-time.form-control(type="time", name="appointment-time", required)
+
+              button.btn.btn-primary.w-100(type="submit") Create Vacant Slot
+
+          // -------------------- Time Period Mode --------------------
+          div#time-period-template.appointment-box.p-4.mt-4.mb-4.bg-white.shadow.rounded(style="max-width: 500px; margin: auto; display: none;")
+            form(action="/admin/set-appointment-period", method="POST", id="appointment-form-period")
+              input(type="hidden", name="mode", value="period")
+              .mb-3
+                label(for="appointment-date-range").fw-bold Select Date:
+                input#appointment-date-range.form-control(type="date", name="appointment-date", min=new Date().toISOString().split('T')[0], required)
+
+              .mb-3
+                label(for="start-time").fw-bold Start Time:
+                input#start-time.form-control(type="time", name="start-time", required)
+
+              .mb-3
+                label(for="end-time").fw-bold End Time:
+                input#end-time.form-control(type="time", name="end-time", required)
+
+              .mb-3
+                label(for="slots-count").fw-bold Number of Slots:
+                input#slots-count.form-control(type="number", name="slots-count", min="1", required)
+
+              button.btn.btn-primary.w-100(type="submit") Create Slots in Period
+
+    .container
+      //- Search Bar
+      .form-group.mb-4
+        .input-group(style="margin-top: 15px; border: 2px solid #0d6efd; border-radius: 5px; height: 40px;")
+          span.input-group-text(style="background-color: #0d6efd; color: white; padding: 0 12px; display: flex; align-items: center;")
+            i.fas.fa-search(style="font-size: 16px;") 🔍 Search
+          input#appointmentSearch.form-control(
+            type="text",
+            placeholder="Search by name or mobile number...",
+            style="font-weight: bold; border: none; box-shadow: none;"
+          )
+
+
+      //- Accordion Wrapper
+      #appointmentAccordion.accordion
+
+        //- Current Appointments Section
+        .accordion-item
+          h2.accordion-header
+            button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#collapseCurrent")
+              | Today Appointments
+          #collapseCurrent.accordion-collapse.collapse(data-bs-parent="#appointmentAccordion")
+            .accordion-body
+              .scrollable-container
+                .table-responsive
+                  table.table.table-bordered
+                    thead
+                      tr
+                        th User Name
+                        th Date
+                        th Time
+                        th Contact
+                        th remark
+                        th
+                          // 🔽 Dropdown Button in Status Header
+                          .dropdown
+                            button.btn.btn-light.btn-sm.dropdown-toggle(type="button", data-bs-toggle="dropdown", aria-expanded="false")
+                              | Status
+                            ul.dropdown-menu.status-filter
+                              li
+                                a.dropdown-item(href="#", data-status="all") All
+                              li
+                                a.dropdown-item(href="#", data-status="pending") Pending
+                              li
+                                a.dropdown-item(href="#", data-status="confirmed") Confirmed
+                              li
+                                a.dropdown-item(href="#", data-status="cancelled") Cancelled
+                        th Actions
+                    tbody#current-appointments
+
+        //- Upcoming Appointments Section
+        .accordion-item
+          h2.accordion-header
+            button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#collapseUpcoming")
+              | Upcoming Appointments
+          #collapseUpcoming.accordion-collapse.collapse(data-bs-parent="#appointmentAccordion")
+            .accordion-body
+              .scrollable-container
+                .table-responsive
+                  table.table.table-bordered
+                    thead
+                      tr
+                        th User Name
+                        th Date
+                        th Time
+                        th Contact
+                        th remark
+                        th
+                          // 🔽 Dropdown Button in Status Header
+                          .dropdown
+                            button.btn.btn-light.btn-sm.dropdown-toggle(type="button", data-bs-toggle="dropdown", aria-expanded="false")
+                              | Status
+                            ul.dropdown-menu.status-filter
+                              li
+                                a.dropdown-item(href="#", data-status="all") All
+                              li
+                                a.dropdown-item(href="#", data-status="pending") Pending
+                              li
+                                a.dropdown-item(href="#", data-status="confirmed") Confirmed
+                              li
+                                a.dropdown-item(href="#", data-status="cancelled") Cancelled
+                        th Actions
+                    tbody#upcoming-appointments
+
+        //- Past Appointments Section
+        .accordion-item
+          h2.accordion-header
+            button.accordion-button.collapsed(type="button", data-bs-toggle="collapse", data-bs-target="#collapsePast")
+              | Past Appointments
+          #collapsePast.accordion-collapse.collapse(data-bs-parent="#appointmentAccordion")
+            .accordion-body
+              .scrollable-container
+                .table-responsive
+                  table.table.table-bordered
+                    thead
+                      tr
+                        th User Name
+                        th Date
+                        th Time
+                        th Contact
+                        th remark
+                        th
+                          // 🔽 Dropdown Button in Status Header
+                          .dropdown
+                            button.btn.btn-light.btn-sm.dropdown-toggle(type="button", data-bs-toggle="dropdown", aria-expanded="false")
+                              | Status
+                            ul.dropdown-menu.status-filter
+                              li
+                                a.dropdown-item(href="#", data-status="all") All
+                              li
+                                a.dropdown-item(href="#", data-status="pending") Pending
+                              li
+                                a.dropdown-item(href="#", data-status="confirmed") Confirmed
+                              li
+                                a.dropdown-item(href="#", data-status="cancelled") Cancelled
+                    tbody#past-appointments
+
+
+script.
+  // Fetch appointment data from the backend and update the frontend
+  document.addEventListener('DOMContentLoaded', function () {
+    fetch('/appointments-overview')
+      .then(response => response.json())
+      .then(data => {
+        if (data) {
+          // Assuming the data contains currentAppointments, upcomingAppointments, and pastAppointments
+          const currentAppointments = data.currentAppointments;
+          const upcomingAppointments = data.upcomingAppointments;
+          const pastAppointments = data.pastAppointments;
+
+          console.log(currentAppointments)
+
+          // Render data for current appointments
+          renderAppointments(currentAppointments, 'current-appointments');
+          renderAppointments(upcomingAppointments, 'upcoming-appointments');
+          renderAppointments(pastAppointments, 'past-appointments');
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching appointment data:', error);
+      });
+  });
+
+  function renderAppointments(appointments, tableId) {
+    const tableBody = document.getElementById(tableId);
+    tableBody.innerHTML = '';
+
+    appointments.forEach(appointment => {
+      const row = document.createElement('tr');
+
+      // Determine status color class
+      let statusClass = '';
+      if (appointment.status === 'Confirmed') {
+        statusClass = 'text-success fw-bold';
+      } else if (appointment.status === 'Pending') {
+        statusClass = 'text-warning fw-bold';
+      } else if (appointment.status === 'Cancelled') {
+        statusClass = 'text-danger fw-bold';
+      }
+
+      //- Date to IST
+      const appointmentDate = new Date(appointment.appointmentDate);
+      const istDate = new Date(appointmentDate.getTime() + 5.5 * 60 * 60 * 1000);
+      istDate.setDate(istDate.getDate());
+      const formattedDate = istDate.toLocaleDateString('en-IN');
+
+      row.innerHTML = `
+        <td>${appointment.name}</td>
+        <td>${formattedDate}</td>
+        <td>${appointment.appointmentTime}</td>
+        <td>${appointment.phoneNumber}</td>
+        <td>
+          <textarea
+            class="form-control remark-input"
+            onblur="saveRemark('${appointment._id}', this.value)"
+          >${appointment.remark || ''}</textarea>
+        </td>
+        <td id="status-${appointment._id}" class="${statusClass}">${appointment.status}</td>
+      `;
+
+
+      // Only add action buttons for current/upcoming appointments
+      if (tableId !== 'past-appointments') {
+        const actionTd = document.createElement('td');
+
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = 'btn btn-success';
+        confirmBtn.textContent = 'Confirm';
+        confirmBtn.addEventListener('click', () => updateAppointmentStatus(appointment._id, 'Confirmed'));
+
+        //- const pendingBtn = document.createElement('button');
+        //- pendingBtn.className = 'btn btn-warning';
+        //- pendingBtn.textContent = 'Pending';
+        //- pendingBtn.addEventListener('click', () => updateAppointmentStatus(appointment._id, 'Pending'));
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'btn btn-danger';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.addEventListener('click', () => updateAppointmentStatus(appointment._id, 'Cancelled'));
+
+        actionTd.appendChild(confirmBtn);
+        //- actionTd.appendChild(pendingBtn);
+        actionTd.appendChild(cancelBtn);
+
+        row.appendChild(actionTd);
+      }
+
+      tableBody.appendChild(row);
+    });
+  }
+
+
+script.
+  async function updateAppointmentStatus(appointmentId, status) {
+    alert(appointmentId);
+    alert(status)
+    console.log('Starting status update for:', appointmentId, '→', status);
+
+    try {
+      const response = await fetch('/admin/update-appointment-status', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ appointmentId, status }) 
+      });
+
+      console.log('Response status:', response.status);
+
+      const data = await response.json();
+      console.log('Response data:', data);
+
+      if (response.ok && data.success) {
+        alert(`Appointment status updated to "${status}"`);
+
+        const statusCell = document.getElementById(`status-${appointmentId}`);
+        if (statusCell) {
+          statusCell.innerText = status;
+        } else {
+          console.warn(`Status cell not found for appointment ID: ${appointmentId}`);
+        }
+
+      } else {
+        console.warn('Failed to update appointment:', data.message || 'Unknown error');
+        alert('Failed to update appointment status: ' + (data.message || 'Unknown error'));
+      }
+
+    } catch (error) {
+      console.error('Error occurred while updating appointment:', error);
+      alert('An error occurred while updating appointment status. Please check the console for details.');
+    }
+  }
+script.
+  document.getElementById('appointmentSearch').addEventListener('input', function () {
+    const searchValue = this.value.toLowerCase();
+
+    // Tables: current, upcoming, past
+    const tableIds = ['current-appointments', 'upcoming-appointments', 'past-appointments'];
+
+    tableIds.forEach(tableId => {
+      const rows = document.querySelectorAll(`#${tableId} tr`);
+      let hasVisible = false;
+
+      rows.forEach(row => {
+        const cells = row.getElementsByTagName('td');
+        if (cells.length >= 4) {
+          const name = cells[0].textContent.toLowerCase();
+          const mobile = cells[3].textContent.toLowerCase();
+
+          const isMatch = name.includes(searchValue) || mobile.includes(searchValue);
+          row.style.display = isMatch ? '' : 'none';
+          if (isMatch) hasVisible = true;
+        }
+      });
+
+      // Auto-expand matching sections
+      const accordionItem = document.querySelector(`#${tableId}`).closest('.accordion-item');
+      if (accordionItem) {
+        const collapseDiv = accordionItem.querySelector('.accordion-collapse');
+        const button = accordionItem.querySelector('.accordion-button');
+        if (hasVisible) {
+          collapseDiv.classList.add('show');
+          button.classList.remove('collapsed');
+        } else {
+          collapseDiv.classList.remove('show');
+          button.classList.add('collapsed');
+        }
+      }
+    });
+  });
+
+script.
+  function saveRemark(appointmentId, remark) {
+    fetch('/admin/update-remark', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ appointmentId, remark })
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log('Remark saved:', data);
+      // Optionally show a toast/alert if needed
+    })
+    .catch(err => console.error('Error saving remark:', err));
+  }
+
+
+//- for interactive stats:
+script.
+  let chart;
+  function updateChart(stats) {
+    const ctx = document.getElementById('statsChart').getContext('2d');
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Total', 'Confirmed', 'Upcoming', 'Past'],
+        datasets: [{
+          label: 'Appointments Overview',
+          data: [stats.total, stats.confirmed, stats.upcoming, stats.past],
+          backgroundColor: ['#28a745', '#007bff', '#ffc107', '#dc3545']
+        }]
+      }
+    });
+  }
+
+  function fetchStats() {
+    fetch('/admin/stats')
+      .then(res => res.json())
+      .then(stats => {
+        document.getElementById('totalAppointments').textContent = stats.total;
+        document.getElementById('confirmedVisits').textContent = stats.confirmed;
+        document.getElementById('upcomingVisits').textContent = stats.upcoming;
+        document.getElementById('pastAppointments').textContent = stats.past;
+        updateChart(stats);
+      })
+      .catch(err => console.error('Error fetching stats:', err));
+  }
+
+  setInterval(fetchStats, 5000); // Auto-refresh stats every 5 seconds
+  window.onload = fetchStats;
+
+script.
+  // Status Filter — scoped to a specific table section
+  document.querySelectorAll('.dropdown-menu.status-filter a').forEach(item => {
+    item.addEventListener('click', function (e) {
+      e.preventDefault();
+
+      const selectedStatus = this.getAttribute('data-status').toLowerCase();
+
+      // Get the nearest accordion-item (where the clicked dropdown exists)
+      const accordionItem = this.closest('.accordion-item');
+      if (!accordionItem) return;
+
+      // Find the table body inside that accordion item
+      const rows = accordionItem.querySelectorAll('tbody tr');
+      let hasVisible = false;
+
+      rows.forEach(row => {
+        const cells = row.getElementsByTagName('td');
+        if (cells.length >= 6) {
+          const statusText = cells[5].textContent.trim().toLowerCase();
+
+          const isMatch = selectedStatus === 'all' || statusText === selectedStatus;
+          row.style.display = isMatch ? '' : 'none';
+          if (isMatch) hasVisible = true;
+        }
+      });
+
+      // Expand/collapse that section based on filtered results
+      const collapseDiv = accordionItem.querySelector('.accordion-collapse');
+      const button = accordionItem.querySelector('.accordion-button');
+      if (collapseDiv && button) {
+        if (hasVisible) {
+          collapseDiv.classList.add('show');
+          button.classList.remove('collapsed');
+        } else {
+          collapseDiv.classList.remove('show');
+          button.classList.add('collapsed');
+        }
+      }
+    });
+  });
+  
+  document.querySelector('#appointment-form-single').addEventListener('submit', async function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Get values from form inputs
+    const appointmentDateValue = document.querySelector('#appointment-date').value;
+    const appointmentTimeValue = document.querySelector('#appointment-time').value;
+
+    try {
+      const res = await fetch('/admin/set-appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          'appointment-date': appointmentDateValue,
+          'appointment-time': appointmentTimeValue
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        // Handle error and check for redirect
+        if (data.redirectTo) {
+          window.location.href = data.redirectTo;
+        } else {
+          alert(data.message || 'An error occurred.');
+        }
+        return;
+      }
+
+      // ✅ Success
+      alert(data.message || 'Appointment created successfully!');
+    } catch (err) {
+      console.error('Error creating appointment:', err);
+      alert('Something went wrong. Please try again later.');
+    }
+  });
+
+//- toggle bar:
+script.
+  const toggleBtn = document.getElementById('toggleBtn');
+  const singleSlotTemplate = document.getElementById('single-slot-template');
+  const timePeriodTemplate = document.getElementById('time-period-template');
+
+  let isPeriodMode = false;
+
+  toggleBtn.addEventListener('click', () => {
+    isPeriodMode = !isPeriodMode;
+
+    if (isPeriodMode) {
+      singleSlotTemplate.style.display = 'none';
+      timePeriodTemplate.style.display = 'block';
+      toggleBtn.textContent = 'Switch to Single Slot Mode';
+    } else {
+      singleSlotTemplate.style.display = 'block';
+      timePeriodTemplate.style.display = 'none';
+      toggleBtn.textContent = 'Switch to Time Period Mode';
+    }
+  });
+
+script.
+  document.getElementById('appointment-form-period').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // Manually get values from the form inputs
+    const appointmentDate = document.getElementById('appointment-date-range').value;
+    const startTime = document.getElementById('start-time').value;
+    const endTime = document.getElementById('end-time').value;
+    const slotsCount = document.getElementById('slots-count').value;
+
+    const data = {
+      appointmentDate,
+      startTime,
+      endTime,
+      slotsCount
+    };
+
+    try {
+      const response = await fetch('/admin/set-appointment-period', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.text();
+
+      if (!response.ok) {
+        alert(result);
+      } else {
+        alert('Slots created successfully!');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Something went wrong.');
+    }
+  });
+
+script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
+//- for interactive stats:
+script(src="https://cdn.jsdelivr.net/npm/chart.js") 
+

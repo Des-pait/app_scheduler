@@ -1,0 +1,204 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Admin SignUp
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css")
+    style.
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        padding-top: 40px;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .signup-container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 12px;
+        border: 2px solid #343a40;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 380px;
+        margin: 20px;
+        position: relative;
+      }
+
+      .close-btn:hover {
+        color: #e74c3c;
+        transition: color 0.3s;
+      }
+
+      .signup-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #343a40;
+      }
+
+      .signup-container form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .signup-container label {
+        font-size: 14px;
+        margin-bottom: 6px;
+        color: #495057;
+        font-weight: 500;
+      }
+
+      .signup-container input {
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: border-color 0.2s;
+      }
+
+      .signup-container input:focus {
+        border-color: #007bff;
+        outline: none;
+      }
+
+      .signup-container button {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .signup-container button:hover {
+        background-color: #0056b3;
+      }
+
+      .signup-container button[type="button"] {
+        background-color: #6c757d;
+      }
+
+      .signup-container button[type="button"]:hover {
+        background-color: #495057;
+      }
+
+      @media (max-width: 400px) {
+        .signup-container {
+          width: 90%;
+        }
+      }
+
+  body
+    .signup-container(style="background-color:#fff; padding:30px; border-radius:12px; border:2px solid #343a40; box-shadow:0 5px 15px rgba(0,0,0,0.1); width:380px; margin:20px; color:#000; position:relative;")
+
+      h2
+        i(class="fas fa-user-shield")
+        | Admin Signup
+
+      // Move form's position relative to the outer container
+      form(action="/admin_signup" method="POST" id="signup-form")
+
+        // The close button is OUTSIDE form fields but INSIDE the form container
+        span.close-btn(
+          style="position:absolute; top:8px; right:10px; cursor:pointer; font-size:22px; color:black;"
+          onclick="window.history.back()"
+        ) &times;
+
+        // Form fields
+        label(for="username") Username
+        input(type="text" id="username" name="username" required)
+
+        label(for="corporateAdress") Office Address
+        input(type="text" id="corporateAdress" name="corporateAdress" required)
+
+        label(for="email") Email
+        input(type="email" id="email" name="email" required)
+
+        button(type="button", onclick="sendEmailOtp()") Send OTP to Email
+
+        input(type="number", id="emailOtp" name="emailOtp" placeholder="Enter Email OTP" pattern="\\d{6}" required)
+
+        label(for="mobile") Mobile Number
+        input(type="text" id="mobile" name="mobile" pattern="\\d{10}" required)
+
+        button(type="button", onclick="sendMobileOtp()") Send OTP to Mobile
+
+        input(type="number", id="mobileOtp" name="mobileOtp" placeholder="Enter Mobile OTP" pattern="\\d{6}" required)
+
+        label(for="password") Password
+        input(type="password" id="password" name="password" required)
+
+        label(for="confirm_password") Confirm Password
+        input(type="password" id="confirm_password" name="confirm_password" required)
+
+        button(type="submit") Sign Up
+
+
+    script(src="../js/admin_signup.js")
+
+    script.
+        async function sendEmailOtp() {
+        const email = document.getElementById('email').value;
+        if (!email) return alert('Enter an email first');
+        document.getElementById('email').readOnly = true;
+
+        const res = await fetch('/send-email-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: email,
+                subject: 'OTP for signup at _org',
+                message: ''   // You can pass custom OTP message here if needed
+            })
+        });
+
+        const data = await res.json();
+        alert(data.message || 'OTP sent to email');
+        }
+
+        // request OTP for a mobile number
+        async function sendMobileOtp() {
+        const mobile = document.getElementById('mobile').value.trim();
+
+        if (!mobile || mobile.length !== 10 || !/^\d+$/.test(mobile)) {
+            return alert('Please enter a valid 10-digit mobile number.');
+        }
+        document.getElementById('mobile').readOnly = true;
+
+        try {
+            const res = await fetch('/send-mobile-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mobile })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+            throw new Error(data.error || 'Failed to send OTP.');
+            }
+
+            alert(data.message || 'OTP sent to mobile');
+        } catch (error) {
+            console.error('Error sending mobile OTP:', error);
+            alert(error.message || 'An unexpected error occurred.');
+        }
+        }
+    
+    //- to close the form
+    script.
+      document.addEventListener('DOMContentLoaded', function () {
+        const closeBtn = document.querySelector('.close-btn');
+
+        closeBtn.addEventListener('click', () => {
+          window.history.go(-1);  // Navigate to the previous page
+        });
+      });
+
