@@ -23,7 +23,6 @@ const sslOptions = {
 
 const { Appointment, User, Service, Admin, SyncDateTime, AppointmentSlot, Slot} = require('./models/User');
 
-const url = 'mongodb://127.0.0.1:27017/dk';
 mongoose.connect(process.env.MONGO_URL);
 
 // Define mongoose schema
@@ -922,7 +921,7 @@ app.post('/admin/set-appointment-period', isAdminAuthenticated, async (req, res)
     // Save slots in bulk
     await Slot.insertMany(slotsToInsert);
 
-    res.send('Slots created successfully');
+    return res.redirect('/admin/admin_dashboard')
   } catch (error) {
     console.error('Error creating slots:', error);
     res.status(500).send('Internal server error');
@@ -1171,7 +1170,8 @@ app.post('/admin/change-email', async (req, res) => {
   await admin.save();
   otpMap.delete(`verify-email-${adminId}`);
 
-  res.send("Email updated successfully");
+  
+  return res.redirect('/profile');
 });
 
 // Office Address OTP Sending
@@ -1196,6 +1196,7 @@ app.post('/admin/send-address-otp', isAdminAuthenticated, async (req, res) => {
   try {
     await sendEMail(admin.email, otp);
     res.json({ message: 'OTP sent to your registered email.' });
+    return res.redirect('/profile');
   } catch (error) {
     console.error('Error sending SMS:', error);
     res.status(500).json({ error: 'Failed to send OTP.' });
@@ -1233,7 +1234,7 @@ app.post('/admin/verify-address-otp', isAdminAuthenticated, async (req, res) => 
 
     otpMap.delete(`verify-address-${adminId}`);
 
-    res.redirect('/admin/admin_dashboard');
+    return res.redirect('/profile');
   } catch (error) {
     console.error('Error updating address:', error);
     res.status(500).send('Failed to update address.');
@@ -1337,9 +1338,9 @@ app.post('/submit-appointment', async (req, res) => {
 
     // ✅ Step 6: Send confirmation email
     const message = `Dear ${name},\n\nYour appointment is booked for ${appointmentDate} at ${appointmentTime}.\n\nThank you.`;
-    // await sendEMail(email, 'Appointment Confirmation', message);
+    await sendEMail(email, `Appointment Confirmation with ${uniqueId}`);
 
-    return res.json({ success: true, message: 'Appointment booked successfully and email sent.' });
+    return res.redirect('/');
 
   } catch (err) {
     console.error('Error submitting appointment:', err);
