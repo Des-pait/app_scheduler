@@ -98,16 +98,6 @@ html(lang="en")
                     | appointment page link
                   p.text-break.small.text-muted.mt-2 #{user.appointmentLink}
 
-                // 🔳 QR Code & Share
-                .mt-4.text-center
-                  p.fw-bold.mb-2 Your Appointment QR Code:
-                  img(src=user.qrCodePath, alt="QR Code", width="200", height="200", class="img-fluid mt-2 rounded shadow-sm")
-                  
-                  // 🔗 Share QR Button (Download)
-                  .mt-3
-                    a(href=user.qrCodePath, download=`${user.adminId}_AppointmentQR.png`, class="btn btn-outline-primary")
-                      i.fas.fa-download.me-2
-                      | Download QR Code
 
           // 🔒 Right: Security Settings
           .col-lg-5.mb-4

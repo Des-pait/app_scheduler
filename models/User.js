@@ -118,7 +118,6 @@ const adminSchema = new mongoose.Schema({
     default: null,
   },
   appointmentLink: { type: String },
-  qrCodePath: { type: String },
 
   // Subscription plan and access
   subscriptionPlan: { type: String, enum: ['Free', 'Basic', 'Premium'], default: 'Free' },
