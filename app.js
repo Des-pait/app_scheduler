@@ -137,7 +137,7 @@ app.get('/appointments/data', async (req, res) => {
     }
 
     if (!user.isSubscribed){
-      return res.json('No available slots for this receipent')
+      return res.status(400).json({message : 'No available slots for this receipent'})
     }
 
     if (!date ) {
@@ -305,12 +305,12 @@ app.post('/send-email-otp', async (req, res) => {
 
 
   otpMap.set(`email-otp-${email}`, { otp, timestamp: Date.now() });
-  // try {
-  //   await sendEMail(email, subject, `${message} Your OTP is: ${otp}`);
-  //   return res.json({ success: true, message: 'OTP sent successfully' });
-  // } catch (err) {
-  //   return res.status(500).json({ error: 'Failed to send OTP' });
-  // }
+  try {
+    await sendEMail(email, subject, `${message} Your OTP is: ${otp}`);
+    return res.json({ success: true, message: 'OTP sent successfully' });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to send OTP' });
+  }
 });
 
 // for signup-email verification
@@ -325,17 +325,17 @@ app.post('/send-usr-email-otp', async (req, res) => {
   }
 
   otpMap.set(`usr-email-otp-${email}`, { otp, timestamp: Date.now() });
-  // try {
-  //   await sendEMail(email, subject, `${message} Your OTP is: ${otp}`);
-  //   return res.json({ success: true, message: 'OTP sent successfully' });
-  // } catch (err) {
-  //   return res.status(500).json({ error: 'Failed to send OTP' });
-  // }
+  try {
+    await sendEMail(email, subject, `${message} Your OTP is: ${otp}`);
+    return res.json({ success: true, message: 'OTP sent successfully' });
+  } catch (err) {
+    return res.status(500).json({ error: 'Failed to send OTP' });
+  }
 });
 
 // Route to generate and send OTP to mobile
 app.post('/send-mobile-otp', async (req, res) => {
-  const { mobile } = req.body;
+  const { email, mobile } = req.body;
 
   if (!mobile || !/^\d{10}$/.test(mobile)) {
     return res.status(400).json({ error: 'Invalid mobile number.' });
@@ -349,9 +349,9 @@ app.post('/send-mobile-otp', async (req, res) => {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();  // 6-digit OTP
   otpMap.set(`mobile-otp-${mobile}`, { otp, timestamp: Date.now() });
 
-  sendSms(mobile, otp);  // Simulated SMS sending
+  sendSms(mobile, `mobile verification otp at Tickr ${otp}`);  // Simulated SMS sending
 
-  res.json({ message: `OTP sent to ${mobile}` });
+  res.json({ message: `OTP sent to mobile` });
 });
 
 // POST request endpoints
@@ -431,7 +431,8 @@ app.post('/admin_signup', async (req, res) => {
     otpMap.delete(`email-otp-${email}`);
     otpMap.delete(`mobile-otp-${mobile}`);
 
-    res.status(201).json({ message: 'Admin created successfully!' });
+    res.status(400).json({ message: 'Admin created successfully!' });
+    return res.redirect('/admin/login')
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error, please try again.' });
@@ -935,6 +936,31 @@ function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();  // 6-digit OTP as string
 }
 
+// Replace simulated sendSms with Fast2SMS integration
+// async function sendSms(mobile, otp) {
+//   try {
+//     const response = await axios.post(
+//       'https://www.fast2sms.com/dev/bulkV2',
+//       {
+//         variables_values: otp,
+//         route: 'otp',
+//         numbers: mobile
+//       },
+//       {
+//         headers: {
+//           'authorization': process.env.FAST2SMS_API_KEY,
+//           'Content-Type': 'application/json'
+//         }
+//       }
+//     );
+
+//     console.log("SMS sent:", response.data);
+//   } catch (error) {
+//     console.error("Error sending SMS:", error.response?.data || error.message);
+//   }
+// }
+
+
 // function to share email on otp
 async function sendEMail(toEmail, otp, message) {
   try {
@@ -949,7 +975,7 @@ async function sendEMail(toEmail, otp, message) {
     const mailOptions = {
       from: `"Admin Panel" <${process.env.EMAIL_USER}>`,
       to: toEmail,
-      subject: 'Tickr OTP:',
+      subject: message,
       text: otp
     };
 
@@ -985,8 +1011,8 @@ app.post('/admin/send-otp-mobile', isAdminAuthenticated, async (req, res) => {
     const admin = await Admin.findById(adminId);
     if (!admin) return res.status(404).send("Admin not found");
     
-    sendEMail(admin.email, otp);
-    return res.json({ message: `OTP sent to registered email.` });
+    sendSms(newMobile, `verification to update mobile at Tickr ${otp}`);
+    return res.status(400).json({ message: `OTP sent to registered New Contact Number.` });
 
   } catch (err) {
     console.error("Send emain OTP error:", err);
@@ -1058,9 +1084,9 @@ app.post('/admin/send-otp-password', isAdminAuthenticated, async (req, res) => {
     otpMap.set(`verify-password-${adminId}`, { otp, newPassword });
 
 
-    sendEMail(admin.email, otp);
+    sendEMail(admin.email, otp, 'verification to update password at Tickr');
 
-    return res.json({ message: `OTP sent to email ending in ${admin.email.slice(-4)}` });
+    return res.json({ message: `OTP sent to email ending in ${admin.email.slice(-14)}` });
 
   } catch (err) {
     console.error("Password OTP error:", err);
@@ -1139,10 +1165,10 @@ app.post('/admin/send-otp-email', async (req, res) => {
 
 
     // ✅ Send OTP to the currently registered email (not newEmail)
-    await sendEMail(admin.email, "OTP for Changing Email", `Your OTP is: ${otp}`);
+    await sendEMail(admin.email, `Your OTP is: ${otp}`, "OTP for Changing Email");
 
     return res.json({
-      message: `OTP sent to your registered email ending in ${admin.email.slice(-10)}`
+      message: `OTP sent to your registered email ending in ${admin.email.slice(-14)}`
     });
 
   } catch (err) {
@@ -1194,7 +1220,7 @@ app.post('/admin/send-address-otp', isAdminAuthenticated, async (req, res) => {
 
   admin = await Admin.findOne({adminId:adminId})
   try {
-    await sendEMail(admin.email, otp);
+    await sendEMail(admin.email, otp, 'Verification to update address at Tickr');
     res.json({ message: 'OTP sent to your registered email.' });
     return res.redirect('/profile');
   } catch (error) {
@@ -1275,7 +1301,7 @@ app.post('/send-appointment-otp', async (req, res) => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     otpMap.set(`verify-appointment-${email}`, { otp });
 
-    sendEMail(email, `Your OTP for appointment booking is: ${otp}`);
+    sendEMail(email, `Your OTP for appointment booking is: ${otp}`, 'Do not share with anyone');
 
     return res.json({ success: true, message: `OTP sent to email` });
   } catch (err) {
@@ -1338,7 +1364,7 @@ app.post('/submit-appointment', async (req, res) => {
 
     // ✅ Step 6: Send confirmation email
     const message = `Dear ${name},\n\nYour appointment is booked for ${appointmentDate} at ${appointmentTime}.\n\nThank you.`;
-    await sendEMail(email, `Appointment Confirmation with ${uniqueId}`);
+    await sendEMail(email, `Appointment Confirmation with ${uniqueId}`, 'please check your appointment status at view past appointments');
 
     return res.redirect('/');
 

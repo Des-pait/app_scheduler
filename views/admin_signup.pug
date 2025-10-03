@@ -171,12 +171,13 @@ html(lang="en")
             return alert('Please enter a valid 10-digit mobile number.');
         }
         document.getElementById('mobile').readOnly = true;
+        const email = document.getElementById('email').value;
 
         try {
             const res = await fetch('/send-mobile-otp', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ mobile })
+            body: JSON.stringify({ email, mobile })
             });
 
             const data = await res.json();

@@ -280,8 +280,6 @@ html(lang="en")
           return;
         }
 
-        alert(`Unique ID: ${uniqueId}`);  // ✅ Corrected
-        alert(`/appointments/data?adminId=${encodeURIComponent(uniqueId)}`)
 
         fetch(`/appointments/data?adminId=${encodeURIComponent(uniqueId)}`)
           .then(response => {
@@ -293,14 +291,10 @@ html(lang="en")
           .then(data => {
             verifiedAdminId = uniqueId;
 
-              alert('rname' + data.rname)
-              alert('date:' + data.availableDates)
               // ✅ Update recipient name
               const nameInput = document.getElementById('rname');
-              alert('nameI' + nameInput)
               if (nameInput && data.rname) {
                 nameInput.value = data.rname;
-                alert('NI' + nameInput.value)
                 nameInput.disabled = true;
               }
 
@@ -470,7 +464,6 @@ html(lang="en")
           console.log(data);
 
           if (data.success) {
-            alert(data.message);
             return true;
           } else {
             alert('OTP verification failed: ' + data.error);
