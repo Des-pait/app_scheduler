@@ -1430,5 +1430,3 @@ app.get('/profile', async (req, res) => {
 https.createServer(sslOptions, app).listen(port, () => {
   console.log('Server running at https://localhost:3000');
 });
-
-
