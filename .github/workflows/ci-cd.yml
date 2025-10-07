@@ -1,0 +1,52 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main # Trigger on pushes to the main branch
+  pull_request:
+    branches:
+      - main # Trigger on pull requests targeting the main branch
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest # Specify the runner environment
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Action to checkout repository code
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '16.20.2' # Specify Node.js version
+
+      - name: Install dependencies
+        run: npm install # Install project dependencies
+
+      - name: Run tests
+        run: npm test # Execute automated tests
+
+  deploy:
+    needs: build-and-test # This job depends on the successful completion of 'build-and-test'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Add deployment steps here
+      # Example: Deploy to a cloud provider, push Docker image, etc.
+      # - name: Build and push Docker image
+      #   run: |
+      #     docker build -t your-docker-username/your-app:latest .
+      #     echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      #     docker push your-docker-username/your-app:latest
+
+      # - name: Deploy to AWS
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: us-east-1
+      # - name: Deploy application
+      #   run: |
+      #     aws s3 sync ./build s3://your-s3-bucket-name --delete
